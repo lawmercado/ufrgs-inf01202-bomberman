@@ -1,0 +1,12 @@
+# Objects
+*.o
+
+# Make related
+*.inc
+
+# IDE related
+nbproject/
+
+# Binaries
+bomberman
+
