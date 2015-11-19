@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="50"
+   height="75"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.5 r10040"
+   inkscape:export-filename="/home/luisaugusto/Projetos/Bomberman/recursos/jogo/bombermanTrasDireita.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90"
+   sodipodi:docname="bombermanTrasDireita.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="3.5857143"
+     inkscape:cx="16.96253"
+     inkscape:cy="31.216183"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:window-width="1366"
+     inkscape:window-height="700"
+     inkscape:window-x="0"
+     inkscape:window-y="29"
+     inkscape:window-maximized="1">
+    <sodipodi:guide
+       orientation="0,1"
+       position="36.580803,6.7048372"
+       id="guide4035" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Camada 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-977.36218)">
+    <path
+       sodipodi:type="arc"
+       style="fill:#800000;fill-opacity:1;stroke:#1a1a1a;stroke-width:2.3494544;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="path3761-6-3-9"
+       sodipodi:cx="28.934263"
+       sodipodi:cy="9.4521914"
+       sodipodi:rx="7.4601593"
+       sodipodi:ry="7.4601593"
+       d="m 36.394423,9.4521914 c 0,4.1201326 -3.340028,7.4601596 -7.46016,7.4601596 -4.120132,0 -7.460159,-3.340027 -7.460159,-7.4601596 0,-4.1201323 3.340027,-7.4601593 7.460159,-7.4601593 4.120132,0 7.46016,3.340027 7.46016,7.4601593 z"
+       transform="matrix(0.42563072,0,0,0.42563072,30.045246,1017.6585)" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#1a1a1a;stroke-opacity:1"
+       id="rect2989-0-0-1-6"
+       width="9.5401192"
+       height="7.52988"
+       x="1011.6127"
+       y="-44.626495"
+       ry="2.6623504"
+       transform="matrix(0,1,-1,0,0,0)" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#1a1a1a;stroke-opacity:1"
+       id="rect2989-0-0-5"
+       width="9.5401192"
+       height="7.52988"
+       x="1011.6127"
+       y="-12.903386"
+       ry="2.6623504"
+       transform="matrix(0,1,-1,0,0,0)" />
+    <path
+       sodipodi:type="arc"
+       style="fill:#800000;fill-opacity:1;stroke:#1a1a1a;stroke-width:2.3494544;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="path3761-6-1"
+       sodipodi:cx="28.934263"
+       sodipodi:cy="9.4521914"
+       sodipodi:rx="7.4601593"
+       sodipodi:ry="7.4601593"
+       d="m 36.394423,9.4521914 c 0,4.1201326 -3.340028,7.4601596 -7.46016,7.4601596 -4.120132,0 -7.460159,-3.340027 -7.460159,-7.4601596 0,-4.1201323 3.340027,-7.4601593 7.460159,-7.4601593 4.120132,0 7.46016,3.340027 7.46016,7.4601593 z"
+       transform="matrix(0.42563072,0,0,0.42563072,-4.6758687,1017.9375)" />
+    <g
+       id="g3934-7"
+       transform="matrix(-1,0,0,1,49.657372,-12.83187)">
+      <rect
+         transform="matrix(0,1,-1,0,0,0)"
+         ry="2.6623504"
+         y="-33.139442"
+         x="1040.1539"
+         height="7.52988"
+         width="9.5401192"
+         id="rect2989-0-0-1-3-6-2"
+         style="fill:#800000;fill-opacity:1;stroke:#1a1a1a;stroke-opacity:1" />
+      <rect
+         transform="matrix(0,1,-1,0,0,0)"
+         ry="2.6623504"
+         y="-23.705181"
+         x="1038.6677"
+         height="7.52988"
+         width="9.5401192"
+         id="rect2989-0-0-1-3-2"
+         style="fill:#800000;fill-opacity:1;stroke:#1a1a1a;stroke-opacity:1" />
+    </g>
+    <rect
+       style="fill:#003380;fill-opacity:1;stroke:#1a1a1a;stroke-opacity:1"
+       id="rect2989-0-4"
+       width="39.043823"
+       height="30.816732"
+       x="994.0722"
+       y="-40.408367"
+       ry="10.895916"
+       transform="matrix(0,1,-1,0,0,0)" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#1a1a1a;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect2989-4"
+       width="39.043823"
+       height="30.816732"
+       x="5.4780884"
+       y="987.7973"
+       ry="10.895916" />
+    <path
+       sodipodi:type="arc"
+       style="fill:#800000;fill-opacity:1;stroke:#1a1a1a;stroke-width:1.18888891;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="path3761-7"
+       sodipodi:cx="28.934263"
+       sodipodi:cy="9.4521914"
+       sodipodi:rx="7.4601593"
+       sodipodi:ry="7.4601593"
+       d="m 36.394423,9.4521914 c 0,4.1201326 -3.340028,7.4601596 -7.46016,7.4601596 -4.120132,0 -7.460159,-3.340027 -7.460159,-7.4601596 0,-4.1201323 3.340027,-7.4601593 7.460159,-7.4601593 4.120132,0 7.46016,3.340027 7.46016,7.4601593 z"
+       transform="matrix(0.84112149,0,0,0.84112149,0.66276972,989.1496)" />
+    <path
+       style="fill:none;stroke:#1a1a1a;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 10.184871,1025.7255 c 9.615352,1.3918 19.454677,1.5805 29.623319,0"
+       id="path3994-7"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+  </g>
+</svg>
