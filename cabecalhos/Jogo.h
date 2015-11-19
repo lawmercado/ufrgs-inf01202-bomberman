@@ -93,5 +93,6 @@ bool posicaoSobrepoeEmX(Hitbox posicao, Hitbox referencia);
 bool posicaoSobrepoeEmY(Hitbox posicao, Hitbox referencia);
 bool posicaoSobrepoe(Hitbox posicao, Hitbox referencia);
 void desenharJogo(Jogo *jogo, Recursos *recursos);
-void desenharParede(Posicao posicao, Recursos *recursos);
+void desenharParede(Parede *parede, Recursos *recursos);
+void desenharObstaculo(Obstaculo *obstaculo, Recursos *recursos);
 ALLEGRO_COLOR obterCorDeFundo();

@@ -280,14 +280,17 @@ void desenharJogo( Jogo *jogo, Recursos *recursos )
     // Desenha as paredes do mapa
     for( i = 0; i < ALTURA_MAPA_JOGAVEL + 2; i++ ) // +2 por causa das paredes
     {
+        // Desenha as paredes "fixas" do mapa
         for( j = 0; j < LARGURA_MAPA_JOGAVEL + 2; j++ ) // +2 por causa das paredes
         {
             if( (i == 0 || i == (ALTURA_MAPA_JOGAVEL + 1)) // Se está na primeira ou na última linha
                 || (j == 0 || j == (LARGURA_MAPA_JOGAVEL + 1)) ) // Se está na primeira ou na última coluna
             {
-                Posicao posicao = {j * TAMANHO_ENTIDADE, i * TAMANHO_ENTIDADE};
+                Parede parede;
+                parede.posicao.x = j * TAMANHO_ENTIDADE;
+                parede.posicao.y = i * TAMANHO_ENTIDADE;
 
-                desenharParede(posicao, recursos);
+                desenharParede(&parede, recursos);
             }
         }
         
@@ -295,7 +298,15 @@ void desenharJogo( Jogo *jogo, Recursos *recursos )
         {
             if( jogo->paredes[k].indice.i == i )
             {
-                desenharParede(jogo->paredes[k].posicao, recursos);
+                desenharParede(&jogo->paredes[k], recursos);
+            }
+        }
+        
+        for( k = 0; k < jogo->contadorDeObstaculos; k++ )
+        {
+            if( jogo->obstaculos[k].indice.i == i )
+            {
+                desenharObstaculo(&jogo->obstaculos[k], recursos);
             }
         }
         
@@ -308,7 +319,12 @@ void desenharJogo( Jogo *jogo, Recursos *recursos )
 
 }
 
-void desenharParede( Posicao posicao, Recursos *recursos )
+void desenharParede( Parede *parede, Recursos *recursos )
 {
-    al_draw_bitmap(recursos->jogoObstaculoFixo, posicao.x, posicao.y, 0);
+    al_draw_bitmap(recursos->jogoObstaculoFixo, parede->posicao.x, parede->posicao.y, 0);
+}
+
+void desenharObstaculo(Obstaculo *obstaculo, Recursos *recursos)
+{
+    al_draw_bitmap(recursos->jogoObstaculo, obstaculo->posicao.x, obstaculo->posicao.y, 0);
 }

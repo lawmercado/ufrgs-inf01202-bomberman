@@ -16,6 +16,7 @@
 typedef struct Recursos {
     ALLEGRO_BITMAP *menuFundo;
     ALLEGRO_BITMAP *menuIconeSelecao;
+    ALLEGRO_BITMAP *jogoObstaculo;
     ALLEGRO_BITMAP *jogoObstaculoFixo;
     ALLEGRO_BITMAP *jogadorDireitaDireita;
     ALLEGRO_BITMAP *jogadorDireitaEsquerda;

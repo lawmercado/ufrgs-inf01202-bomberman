@@ -86,7 +86,8 @@ Recursos obterRecursos( )
 
     recursos.menuFundo = al_load_bitmap("./recursos/menu/fundo.png");
     recursos.menuIconeSelecao = al_load_bitmap("./recursos/menu/iconeSelecao.png");
-
+    
+    recursos.jogoObstaculo = al_load_bitmap("./recursos/jogo/obstaculo.png");
     recursos.jogoObstaculoFixo = al_load_bitmap("./recursos/jogo/obstaculoFixo.png");
     recursos.jogadorDireitaDireita = al_load_bitmap("./recursos/jogo/bombermanDireitaDireita.png");
     recursos.jogadorDireitaEsquerda = al_load_bitmap("./recursos/jogo/bombermanDireitaEsquerda.png");
