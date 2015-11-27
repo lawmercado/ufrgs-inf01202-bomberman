@@ -6,15 +6,16 @@
 #define MARGEM_INICIAL 25
 #define PONTUACAO_POR_MONSTRO 100
 #define PONTUACAO_POR_SEGUNDO_RESTANTE 5
-#define TAMANHO_PASSO_EM_PX 10
-#define JOGADOR_FRENTE_DIREITA 0
-#define JOGADOR_FRENTE_ESQUERDA 1
-#define JOGADOR_DIREITA_DIREITA 2
-#define JOGADOR_DIREITA_ESQUERDA 3
-#define JOGADOR_TRAS_DIREITA 4
-#define JOGADOR_TRAS_ESQUERDA 5
-#define JOGADOR_ESQUERDA_DIREITA 6
-#define JOGADOR_ESQUERDA_ESQUERDA 7
+#define TAMANHO_PASSO 3
+#define NUMERO_VIDAS_INICIAL 3
+#define JOGADOR_FRENTE 0
+#define JOGADOR_FRENTE_PARADO 1
+#define JOGADOR_DIREITA 2
+#define JOGADOR_DIREITA_PARADO 3
+#define JOGADOR_TRAS 4
+#define JOGADOR_TRAS_PARADO 5
+#define JOGADOR_ESQUERDA 6
+#define JOGADOR_ESQUERDA_PARADO 7
 
 typedef struct Jogador {
     int vidas;
@@ -22,17 +23,13 @@ typedef struct Jogador {
     int nivelAtual;
     int estadoPersonagem;
     int numeroDeBombasSimultaneas;
+    int direcaoMovimento;
     Indice indice;
     Posicao posicao;
+    Sprite sprite;
 } Jogador;
 
-bool jogadorAtingeMapaAoIrParaCima(Hitbox hitboxJogador);
-bool jogadorAtingeMapaAoIrParaDireita(Hitbox hitboxJogador);
-bool jogadorAtingeMapaAoIrParaBaixo(Hitbox hitboxJogador);
-bool jogadorAtingeMapaAoIrParaEsquerda(Hitbox hitboxJogador);
-void alternarEstadoDoPersonagemAoIrParaCima(Jogador *jogador);
-void alternarEstadoDoPersonagemAoIrParaDireita(Jogador *jogador);
-void alternarEstadoDoPersonagemAoIrParaBaixo(Jogador *jogador);
-void alternarEstadoDoPersonagemAoIrParaEsquerda(Jogador *jogador);
+void definirPadroesDoJogador(Jogador *jogador, Recursos *recursos);
+void trocarEstadoDoJogador(Jogador* jogador, Recursos* recursos, int estado);
 Hitbox obterHitboxDoJogador(Jogador *jogador);
-void desenharJogador(Jogador *jogador, Recursos *recursos);
+Sprite obterSpriteDoJogadorConformeEstado(Jogador *jogador, Recursos *recursos);

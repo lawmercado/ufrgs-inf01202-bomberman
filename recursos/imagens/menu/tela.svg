@@ -16,7 +16,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.5 r10040"
-   sodipodi:docname="fundo.svg"
+   sodipodi:docname="tela.svg"
    inkscape:export-filename="/home/luisaugusto/Projetos/Bomberman/recursos/menu/fundo.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
@@ -84,9 +84,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.64539564"
-     inkscape:cx="174.90229"
-     inkscape:cy="278.56001"
+     inkscape:zoom="0.64539563"
+     inkscape:cx="287.91589"
+     inkscape:cy="109.45168"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -122,7 +122,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -221,33 +221,33 @@
     </g>
     <text
        xml:space="preserve"
-       style="font-size:40px;font-style:normal;font-weight:normal;line-height:200%;letter-spacing:0px;word-spacing:0px;fill:#e5e3b9;fill-opacity:1;stroke:none;font-family:Sans"
-       x="434.0332"
-       y="770.27429"
+       style="font-size:40.00003052px;font-style:normal;font-weight:normal;line-height:160.00000238%;letter-spacing:0px;word-spacing:0px;fill:#e5e3b9;fill-opacity:1;stroke:none;font-family:Sans"
+       x="463.0509"
+       y="765.8075"
        id="text3929"
-       sodipodi:linespacing="200%"
+       sodipodi:linespacing="160%"
        inkscape:export-filename="/home/luisaugusto/Projetos/Bomberman/res/fundoMenu.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><tspan
          sodipodi:role="line"
          id="tspan3931"
-         x="434.0332"
-         y="770.27429"
-         style="font-weight:bold;text-align:start;line-height:200%;letter-spacing:-4px;text-anchor:start;fill:#e5e3b9;fill-opacity:1;stroke:none;-inkscape-font-specification:Sans Bold">Novo jogo</tspan><tspan
+         x="463.0509"
+         y="765.8075"
+         style="font-size:50.00003815px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:160.00000238%;letter-spacing:-2.00000143px;text-anchor:start;fill:#e5e3b9;fill-opacity:1;stroke:none;font-family:Cantarell;-inkscape-font-specification:Cantarell Bold">Novo jogo</tspan><tspan
          sodipodi:role="line"
-         x="434.0332"
-         y="850.27429"
+         x="463.0509"
+         y="845.80756"
          id="tspan3933"
-         style="font-weight:bold;text-align:start;line-height:200%;letter-spacing:-4px;text-anchor:start;fill:#e5e3b9;fill-opacity:1;stroke:none;-inkscape-font-specification:Sans Bold">Pontuação</tspan><tspan
+         style="font-size:50.00003815px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:160.00000238%;letter-spacing:-2.00000143px;text-anchor:start;fill:#e5e3b9;fill-opacity:1;stroke:none;font-family:Cantarell;-inkscape-font-specification:Cantarell Bold">Pontuação</tspan><tspan
          sodipodi:role="line"
-         x="434.0332"
-         y="930.27429"
+         x="463.0509"
+         y="925.80762"
          id="tspan3935"
-         style="font-weight:bold;text-align:start;line-height:200%;letter-spacing:-4px;text-anchor:start;fill:#e5e3b9;fill-opacity:1;stroke:none;-inkscape-font-specification:Sans Bold">Sair</tspan></text>
+         style="font-size:50.00003815px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:160.00000238%;letter-spacing:-2.00000143px;text-anchor:start;fill:#e5e3b9;fill-opacity:1;stroke:none;font-family:Cantarell;-inkscape-font-specification:Cantarell Bold">Sair</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:27.79520226px;font-style:normal;font-weight:normal;line-height:200%;letter-spacing:0px;word-spacing:0px;fill:#e5e3b9;fill-opacity:1;stroke:none;font-family:Sans"
-       x="189.59795"
+       x="193.65234"
        y="1032.2488"
        id="text3929-0"
        sodipodi:linespacing="200%"
@@ -255,9 +255,9 @@
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><tspan
          sodipodi:role="line"
-         x="189.59795"
+         x="193.65234"
          y="1032.2488"
          id="tspan3935-0"
-         style="font-size:22px;font-weight:bold;text-align:start;line-height:200%;letter-spacing:-2.77952027px;text-anchor:start;fill:#e5e3b9;fill-opacity:1;stroke:none;-inkscape-font-specification:Sans Bold">Desenvolvido por Luís Augusto Weber Mercado</tspan></text>
+         style="font-size:25px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:200%;letter-spacing:-2px;text-anchor:start;fill:#e5e3b9;fill-opacity:1;stroke:none;font-family:Cantarell;-inkscape-font-specification:Cantarell Bold">Desenvolvido por Luís Augusto Weber Mercado</tspan></text>
   </g>
 </svg>

@@ -39,6 +39,6 @@ void processarEventoDoMenu(Menu *menu, ALLEGRO_EVENT evento)
 void desenharMenu(Menu *menu, Recursos *recursos)
 {
     al_clear_to_color(obterCorDeFundo());
-	al_draw_bitmap(recursos->menuFundo, 0, 0, 0);
-	al_draw_bitmap(recursos->menuIconeSelecao, 380, 290 + (80 * (menu->opcaoIndicada - 1)), 0);
+	al_draw_bitmap(recursos->menuTela, 0, 0, 0);
+	al_draw_bitmap(recursos->menuIndicador, 410, 280 + (80 * (menu->opcaoIndicada - 1)), 0);
 }

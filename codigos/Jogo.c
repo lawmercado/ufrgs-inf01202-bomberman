@@ -1,17 +1,28 @@
 #include <allegro5/events.h>
 #include <stdio.h>
 #include <math.h>
+#include <allegro5/keycodes.h>
+#include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_font.h>
 
 #include "../cabecalhos/Jogo.h"
 
 #include "./Jogador.c"
+#include "./Monstro.c"
+
+void criarNovoJogo( Aplicacao *aplicacao, Jogo *jogo )
+{
+    jogo->inicializado = false;
+    jogo->modo = JOGO_MODO_RODANDO;
+    definirPadroesDoJogo(jogo);
+    definirPadroesDoJogador(&jogo->jogador, &aplicacao->recursos);
+}
 
 void definirPadroesDoJogo( Jogo *jogo )
 {
-    jogo->inicializado = false;
+    jogo->tempo = TEMPO_POR_NIVEL;
+    jogo->jogador.pontuacao = 0;
     jogo->carregado = false;
-    jogo->jogador.nivelAtual = 1;
-    jogo->jogador.estadoPersonagem = JOGADOR_FRENTE_DIREITA;
     jogo->contadorDeMonstros = 0;
     jogo->contadorDeObstaculos = 0;
     jogo->contadorDeParedes = 0;
@@ -27,10 +38,10 @@ bool carregarJogoConformeNivel( Jogo *jogo, int nivel )
 
     if( !jogo->carregado )
     {
-        printf("Carregando o nível %d...\n", nivel);
+        carregarParedesPadroes(jogo);
 
         char nomeArquivo[32];
-        snprintf(nomeArquivo, sizeof (char) * 32, "./niveis/nivel%i.txt", nivel);
+        snprintf(nomeArquivo, sizeof (char) * 32, "./recursos/niveis/nivel%i.txt", nivel);
 
         FILE *arquivo = fopen(nomeArquivo, "r");
         if( arquivo == NULL )
@@ -65,14 +76,14 @@ bool carregarJogoConformeNivel( Jogo *jogo, int nivel )
 void popularJogoConformeLinha( Jogo *jogo, char linha[], int numeroLinha )
 {
     int i = 0;
-    
+
     for( i = 0; i < LARGURA_MAPA_JOGAVEL; i++ )
     {
         switch(linha[i])
         {
             case 'B':
                 jogo->jogador.posicao.x = (i + 1) * TAMANHO_ENTIDADE;
-                jogo->jogador.posicao.y = (numeroLinha + 1) * TAMANHO_ENTIDADE - MARGEM_INICIAL + TAMANHO_SOMBRA_EM_PX;
+                jogo->jogador.posicao.y = (numeroLinha + 1) * TAMANHO_ENTIDADE - MARGEM_INICIAL + TAMANHO_SOMBRA;
                 jogo->jogador.indice.i = (numeroLinha + 1);
                 jogo->jogador.indice.j = (i + 1);
 
@@ -88,7 +99,6 @@ void popularJogoConformeLinha( Jogo *jogo, char linha[], int numeroLinha )
                 break;
 
             case 'M':
-                jogo->monstros[jogo->contadorDeMonstros].vivo = true;
                 jogo->monstros[jogo->contadorDeMonstros].posicao.x = (i + 1) * TAMANHO_ENTIDADE;
                 jogo->monstros[jogo->contadorDeMonstros].posicao.y = (numeroLinha + 1) * TAMANHO_ENTIDADE;
                 jogo->monstros[jogo->contadorDeMonstros].indice.i = (numeroLinha + 1);
@@ -120,8 +130,45 @@ void popularJogoConformeLinha( Jogo *jogo, char linha[], int numeroLinha )
                 break;
         }
     }
-    
-    printf("CP %d\n", jogo->contadorDeParedes);
+}
+
+void carregarParedesPadroes( Jogo *jogo )
+{
+    int i, j;
+
+    for( j = 0; j < LARGURA_MAPA_JOGAVEL + 2; j++ )
+    {
+        jogo->paredes[jogo->contadorDeParedes].posicao.x = j * TAMANHO_ENTIDADE;
+        jogo->paredes[jogo->contadorDeParedes].posicao.y = 0 * TAMANHO_ENTIDADE;
+        jogo->paredes[jogo->contadorDeParedes].indice.i = 0;
+        jogo->paredes[jogo->contadorDeParedes].indice.j = j;
+
+        jogo->contadorDeParedes = jogo->contadorDeParedes + 1;
+
+        jogo->paredes[jogo->contadorDeParedes].posicao.x = j * TAMANHO_ENTIDADE;
+        jogo->paredes[jogo->contadorDeParedes].posicao.y = (ALTURA_MAPA_JOGAVEL + 1) * TAMANHO_ENTIDADE;
+        jogo->paredes[jogo->contadorDeParedes].indice.i = (ALTURA_MAPA_JOGAVEL + 1);
+        jogo->paredes[jogo->contadorDeParedes].indice.j = j;
+
+        jogo->contadorDeParedes = jogo->contadorDeParedes + 1;
+    }
+
+    for( i = 0; i < ALTURA_MAPA_JOGAVEL + 2; i++ ) // +2 por causa das paredes
+    {
+        jogo->paredes[jogo->contadorDeParedes].posicao.x = 0 * TAMANHO_ENTIDADE;
+        jogo->paredes[jogo->contadorDeParedes].posicao.y = i * TAMANHO_ENTIDADE;
+        jogo->paredes[jogo->contadorDeParedes].indice.i = i;
+        jogo->paredes[jogo->contadorDeParedes].indice.j = 0;
+
+        jogo->contadorDeParedes = jogo->contadorDeParedes + 1;
+
+        jogo->paredes[jogo->contadorDeParedes].posicao.x = (LARGURA_MAPA_JOGAVEL + 1) * TAMANHO_ENTIDADE;
+        jogo->paredes[jogo->contadorDeParedes].posicao.y = i * TAMANHO_ENTIDADE;
+        jogo->paredes[jogo->contadorDeParedes].indice.i = i;
+        jogo->paredes[jogo->contadorDeParedes].indice.j = (LARGURA_MAPA_JOGAVEL + 1);
+
+        jogo->contadorDeParedes = jogo->contadorDeParedes + 1;
+    }
 }
 
 void carregarJogoConformeJogoSalvo( Jogo *jogo )
@@ -132,191 +179,338 @@ void carregarJogoConformeJogoSalvo( Jogo *jogo )
     }
 }
 
-void processarEventoDoJogo( Jogo *jogo, ALLEGRO_EVENT evento )
+void processarEventoDoJogo( Aplicacao *aplicacao, Jogo *jogo, ALLEGRO_EVENT evento )
 {
     Jogador *jogador;
     jogador = &jogo->jogador;
-    Hitbox hitboxJogador = obterHitboxDoJogador(jogador);
-
-    if( evento.type == ALLEGRO_EVENT_KEY_CHAR )
+    
+    switch(evento.type)
     {
-        switch(evento.keyboard.keycode)
+        case ALLEGRO_EVENT_TIMER:
         {
-            case ALLEGRO_KEY_UP:
+            switch(jogo->modo)
             {
-                hitboxJogador.y -= TAMANHO_PASSO_EM_PX;
+                case JOGO_MODO_RODANDO:
+                    if( evento.timer.source == aplicacao->timerFPS )
+                    {
+                        processarTickFPSJogoRodando(aplicacao, jogo);
+                    }
+                    else if( evento.timer.source == aplicacao->timerRelogio )
+                    {
+                        if( jogo->tempo == 0 )
+                        {
+                            jogo->tempo = TEMPO_POR_NIVEL;
+                        }
+                        
+                        jogo->tempo = jogo->tempo - 1;
+                    }
 
-                if( !jogadorAtingeMapaAoIrParaCima(hitboxJogador) )
-                {
-                    jogador->posicao.y -= TAMANHO_PASSO_EM_PX;
-                }
+                    break;
 
-                alternarEstadoDoPersonagemAoIrParaCima(jogador);
-
-                break;
+                case JOGO_MODO_PAUSADO:
+                    if( evento.timer.source == aplicacao->timerFPS )
+                    {
+                        processarTickFPSJogoPausado(aplicacao, jogo);
+                    }
+                    
+                    break;
             }
-
-            case ALLEGRO_KEY_RIGHT:
-            {
-                hitboxJogador.x += TAMANHO_PASSO_EM_PX;
-
-                if( !jogadorAtingeMapaAoIrParaDireita(hitboxJogador) )
-                {
-                    jogador->posicao.x += TAMANHO_PASSO_EM_PX;
-                }
-
-                alternarEstadoDoPersonagemAoIrParaDireita(jogador);
-
-                break;
-            }
-
-            case ALLEGRO_KEY_DOWN:
-            {
-                hitboxJogador.y += TAMANHO_PASSO_EM_PX;
-
-                if( !jogadorAtingeMapaAoIrParaBaixo(hitboxJogador) )
-                {
-                    jogador->posicao.y += TAMANHO_PASSO_EM_PX;
-                }
-
-                alternarEstadoDoPersonagemAoIrParaBaixo(jogador);
-
-                break;
-
-            }
-
-            case ALLEGRO_KEY_LEFT:
-            {
-                hitboxJogador.x -= TAMANHO_PASSO_EM_PX;
-
-                if( !jogadorAtingeMapaAoIrParaEsquerda(hitboxJogador) )
-                {
-                    jogador->posicao.x -= TAMANHO_PASSO_EM_PX;
-                }
-
-                alternarEstadoDoPersonagemAoIrParaEsquerda(jogador);
-
-                break;
-            }
-
-            case ALLEGRO_KEY_SPACE:
-                // Plantar bomba
-
-                break;
         }
-
-        jogador->indice.i = round(jogador->posicao.y / 50);
-        jogador->indice.j = round(jogador->posicao.x / 50);
     }
 }
 
-bool posicaoSobrepoeEmX( Hitbox posicao, Hitbox referencia )
+void processarTickFPSJogoRodando( Aplicacao *aplicacao, Jogo *jogo )
 {
-    if( (referencia.x < posicao.x) && (posicao.x < (referencia.x + TAMANHO_ENTIDADE))
-        || (referencia.x < (posicao.x + TAMANHO_ENTIDADE)) && ((posicao.x + TAMANHO_ENTIDADE) < (referencia.x + TAMANHO_ENTIDADE)) )
-    {
-        printf("Atingiu em x, %f e %f\n", posicao.x, referencia.x);
+    Jogador *jogador;
+    jogador = &jogo->jogador;
 
-        return true;
+    if( TeclasPressionadas[ALLEGRO_KEY_UP] )
+    {
+        jogador->direcaoMovimento = DIRECAO_CIMA;
+        
+        trocarEstadoDoJogador(jogador, &(aplicacao->recursos), JOGADOR_TRAS);
     }
-
-    return false;
-}
-
-bool posicaoSobrepoeEmY( Hitbox posicao, Hitbox referencia )
-{
-    if( (referencia.y < posicao.y) && (posicao.y < (referencia.y + TAMANHO_ENTIDADE))
-        || (referencia.y < (posicao.y + TAMANHO_ENTIDADE)) && ((posicao.y + TAMANHO_ENTIDADE) < (referencia.y + TAMANHO_ENTIDADE)) )
+    else if( TeclasPressionadas[ALLEGRO_KEY_RIGHT] )
     {
-        printf("Atingiu em y, %f e %f\n", posicao.y, referencia.y);
-
-        return true;
+        jogador->direcaoMovimento = DIRECAO_DIREITA;
+        
+        trocarEstadoDoJogador(jogador, &(aplicacao->recursos), JOGADOR_DIREITA);
     }
-
-    return false;
-}
-
-bool posicaoSobrepoe( Hitbox posicao, Hitbox referencia )
-{
-    if( posicaoSobrepoeEmX(posicao, referencia) )
+    else if( TeclasPressionadas[ALLEGRO_KEY_DOWN] )
     {
-        if( !posicaoSobrepoeEmY(posicao, referencia) )
+        jogador->direcaoMovimento = DIRECAO_BAIXO;
+        
+        trocarEstadoDoJogador(jogador, &(aplicacao->recursos), JOGADOR_FRENTE);
+    }
+    else if( TeclasPressionadas[ALLEGRO_KEY_LEFT] )
+    {
+        jogador->direcaoMovimento = DIRECAO_ESQUERDA;
+        
+        trocarEstadoDoJogador(jogador, &(aplicacao->recursos), JOGADOR_ESQUERDA);
+    }
+    else if( TeclasPressionadas[ALLEGRO_KEY_SPACE] )
+    {
+
+    }
+    else if( TeclasPressionadas[ALLEGRO_KEY_ESCAPE] )
+    {
+        jogo->modo = JOGO_MODO_PAUSADO;
+        TeclasPressionadas[ALLEGRO_KEY_ESCAPE] = false; // "Desativa" a tecla
+    }
+    else
+    {
+        // As constantes de estado pares referem-se ao bomberman em movimento
+        // Só troca caso o jogador esteja "em movimento"
+        if( jogador->estadoPersonagem % 2 == 0 )
         {
-            if( posicao.y == referencia.y )
-            {
-                return true;
-            }
+            trocarEstadoDoJogador(jogador, &(aplicacao->recursos), jogador->estadoPersonagem + 1);
+        }
+        
+        jogador->direcaoMovimento = DIRECAO_NULA;
+    }
 
-            return false;
+    if( jogador->direcaoMovimento != DIRECAO_NULA )
+    {
+        alterarPosicaoConformeDirecao(&jogador->posicao, TAMANHO_PASSO, jogador->direcaoMovimento);
+        
+        int i = 0;
+
+        for( i = 0; i < jogo->contadorDeParedes; i++ )
+        {
+            if( obterCondicaoDeDestinoPelaDirecao(jogador->indice, jogo->paredes[i].indice, jogador->direcaoMovimento) )
+            {
+                if( verificarColisao(obterHitboxDoJogador(jogador), obterHitboxPelaPosicao(jogo->paredes[i].posicao)) )
+                {
+                    alterarPosicaoConformeDirecao(&jogador->posicao, TAMANHO_PASSO, obterDirecaoOposta(jogador->direcaoMovimento));
+                }
+            }
         }
 
-        return true;
-    }
-    else if( posicaoSobrepoeEmY(posicao, referencia) )
-    {
-        if( !posicaoSobrepoeEmX(posicao, referencia) )
+        for( i = 0; i < jogo->contadorDeObstaculos; i++ )
         {
-            if( posicao.x == referencia.x )
+            if( obterCondicaoDeDestinoPelaDirecao(jogador->indice, jogo->obstaculos[i].indice, jogador->direcaoMovimento) )
             {
-                return true;
+                if( verificarColisao(obterHitboxDoJogador(jogador), obterHitboxPelaPosicao(jogo->obstaculos[i].posicao)) )
+                {
+                    alterarPosicaoConformeDirecao(&jogador->posicao, TAMANHO_PASSO, obterDirecaoOposta(jogador->direcaoMovimento));
+                }
             }
-
-            return false;
         }
-
-        return true;
     }
+    
+    jogador->indice = obterPosicaoBruta(jogador->posicao);
+}
 
-    return false;
+bool obterCondicaoDeDestinoPelaDirecao(Indice corpo, Indice alvo, int direcao)
+{
+    switch(direcao)
+    {
+        case DIRECAO_CIMA:
+        {
+            return alvo.i <= corpo.i;
+        }
+        
+        case DIRECAO_DIREITA:
+        {
+            return alvo.j >= corpo.j;
+        }
+        
+        case DIRECAO_BAIXO:
+        {
+            return alvo.i >= corpo.i;
+        }
+        
+        case DIRECAO_ESQUERDA:
+        {
+            return alvo.j <= corpo.j;
+        }
+    }
+}
+
+void alterarPosicaoConformeDirecao(Posicao *posicao, int unidades, int direcao)
+{
+    switch(direcao)
+    {
+        case DIRECAO_CIMA:
+        {
+            posicao->y -= unidades;
+            
+            break;
+        }
+        
+        case DIRECAO_DIREITA:
+        {
+            posicao->x += unidades;
+            
+            break;
+        }
+        
+        case DIRECAO_BAIXO:
+        {
+            posicao->y += unidades;
+            
+            break;
+        }
+        
+        case DIRECAO_ESQUERDA:
+        {
+            posicao->x -= unidades;
+            
+            break;
+        }
+    }
+}
+
+int obterDirecaoOposta(int direcao)
+{
+    switch(direcao)
+    {
+        case DIRECAO_CIMA:
+        {
+            return DIRECAO_BAIXO;
+        }
+        
+        case DIRECAO_DIREITA:
+        {
+            return DIRECAO_ESQUERDA;
+        }
+        
+        case DIRECAO_BAIXO:
+        {
+            return DIRECAO_CIMA;
+        }
+        
+        case DIRECAO_ESQUERDA:
+        {
+            return DIRECAO_DIREITA;
+        }
+    }
+}
+
+void processarTickFPSJogoPausado( Aplicacao *aplicacao, Jogo *jogo )
+{
+    if( TeclasPressionadas[ALLEGRO_KEY_ESCAPE] )
+    {
+        limparConteudoDaJanela();
+        // Caso aperte novamente o ESC, sai da partida
+        aplicacao->modo = MODO_MENU;
+    }
+    else if( TeclasPressionadas[ALLEGRO_KEY_SPACE] )
+    {
+        // Caso apertar espaço, volta ao jogo
+        jogo->modo = JOGO_MODO_RODANDO;
+    }
+}
+
+Indice obterPosicaoBruta( Posicao posicao )
+{
+    Indice indice = {round(posicao.y / TAMANHO_ENTIDADE), round(posicao.x / TAMANHO_ENTIDADE)};
+
+    return indice;
+}
+
+Hitbox obterHitboxPelaPosicao( Posicao posicao )
+{
+    Hitbox hitbox;
+    hitbox.x = posicao.x;
+    hitbox.y = posicao.y;
+    hitbox.xFinal = posicao.x + TAMANHO_ENTIDADE;
+    hitbox.yFinal = posicao.y + TAMANHO_ENTIDADE;
+
+    return hitbox;
+}
+
+bool verificarColisao( Hitbox corpo, Hitbox alvo )
+{
+    return (
+        alvo.x < corpo.xFinal &&
+        alvo.xFinal > corpo.x &&
+        alvo.y < corpo.yFinal &&
+        alvo.yFinal > corpo.y
+        );
 }
 
 void desenharJogo( Jogo *jogo, Recursos *recursos )
 {
-    // Pinta a tela com a cor definida
-    al_clear_to_color(obterCorDeFundo());
+    desenharFundo(recursos);
 
-    int i, j, k;
-    
-    // Desenha as paredes do mapa
-    for( i = 0; i < ALTURA_MAPA_JOGAVEL + 2; i++ ) // +2 por causa das paredes
+    int i, j;
+
+    for( i = 0; i < ALTURA_MAPA_JOGAVEL + 2; i++ ) // + 2 por causa das paredes "fixas"
     {
-        // Desenha as paredes "fixas" do mapa
-        for( j = 0; j < LARGURA_MAPA_JOGAVEL + 2; j++ ) // +2 por causa das paredes
+        for( j = 0; j < jogo->contadorDeParedes; j++ )
         {
-            if( (i == 0 || i == (ALTURA_MAPA_JOGAVEL + 1)) // Se está na primeira ou na última linha
-                || (j == 0 || j == (LARGURA_MAPA_JOGAVEL + 1)) ) // Se está na primeira ou na última coluna
+            if( jogo->paredes[j].indice.i == i )
             {
-                Parede parede;
-                parede.posicao.x = j * TAMANHO_ENTIDADE;
-                parede.posicao.y = i * TAMANHO_ENTIDADE;
+                desenharParede(&jogo->paredes[j], recursos);
+            }
+        }
 
-                desenharParede(&parede, recursos);
-            }
-        }
-        
-        for( k = 0; k < jogo->contadorDeParedes; k++ )
+        for( j = 0; j < jogo->contadorDeObstaculos; j++ )
         {
-            if( jogo->paredes[k].indice.i == i )
+            if( jogo->obstaculos[j].indice.i == i )
             {
-                desenharParede(&jogo->paredes[k], recursos);
+                desenharObstaculo(&jogo->obstaculos[j], recursos);
             }
         }
-        
-        for( k = 0; k < jogo->contadorDeObstaculos; k++ )
+
+        for( j = 0; j < jogo->contadorDeMonstros; j++ )
         {
-            if( jogo->obstaculos[k].indice.i == i )
+            if( jogo->monstros[j].indice.i == i )
             {
-                desenharObstaculo(&jogo->obstaculos[k], recursos);
+                // Desenhar
             }
+
         }
-        
+
         if( i == jogo->jogador.indice.i )
         {
-            desenharJogador(&jogo->jogador, recursos);
+            desenharJogador(&jogo->jogador);
         }
 
     }
 
+    desenharRodape(jogo, recursos);
+    
+    if( jogo->modo == JOGO_MODO_PAUSADO )
+    {
+        desenharOverlayDePausa(recursos);
+    }
+
+}
+
+void desenharFundo( Recursos *recursos )
+{
+    int i, j;
+
+    for( i = 0; i < ALTURA_MAPA_JOGAVEL + 2; i++ ) // + 2 por causa das paredes
+    {
+        for( j = 0; j < LARGURA_MAPA_JOGAVEL + 2; j++ ) // + 2 por causa das paredes
+        {
+            al_draw_bitmap(recursos->jogoFundo, j * TAMANHO_ENTIDADE, i * TAMANHO_ENTIDADE + TAMANHO_SOMBRA, 0);
+        }
+    }
+
+}
+
+void desenharRodape(Jogo *jogo, Recursos *recursos)
+{
+    al_draw_bitmap(recursos->jogoRodape, 0, ALTURA_TELA - ALTURA_RODAPE, 0);
+    
+    // Desenha a quantidade de vidas
+    al_draw_textf(recursos->fonteCantarellBold, al_map_rgb(229, 227, 185), 110, ALTURA_TELA - ALTURA_RODAPE + 1, ALLEGRO_ALIGN_CENTER, "%d", jogo->jogador.vidas);
+    
+    // Calcula o tempo passado
+    int horas, minutos, minutosDigito1, minutosDigito2;
+    horas = floor(jogo->tempo / 60.0);
+    minutos = jogo->tempo % 60;
+    minutosDigito1 = floor(minutos / 10.0);
+    minutosDigito2 = minutos % 10;
+    // Desenha o tempo na tela
+    al_draw_textf(recursos->fonteCantarellBold, al_map_rgb(229, 227, 185), 425, ALTURA_TELA - ALTURA_RODAPE + 1, ALLEGRO_ALIGN_CENTER, "%d%d:%d%d", 0, horas, minutosDigito1, minutosDigito2);
+    
+    // Desenha a pontuação
+    al_draw_textf(recursos->fonteCantarellBold, al_map_rgb(229, 227, 185), 790, ALTURA_TELA - ALTURA_RODAPE + 1, ALLEGRO_ALIGN_LEFT, "%d", jogo->jogador.pontuacao);
 }
 
 void desenharParede( Parede *parede, Recursos *recursos )
@@ -324,7 +518,19 @@ void desenharParede( Parede *parede, Recursos *recursos )
     al_draw_bitmap(recursos->jogoObstaculoFixo, parede->posicao.x, parede->posicao.y, 0);
 }
 
-void desenharObstaculo(Obstaculo *obstaculo, Recursos *recursos)
+void desenharObstaculo( Obstaculo *obstaculo, Recursos *recursos )
 {
     al_draw_bitmap(recursos->jogoObstaculo, obstaculo->posicao.x, obstaculo->posicao.y, 0);
+}
+
+void desenharJogador( Jogador *jogador )
+{
+    atualizarSprite(&jogador->sprite);
+    desenharSprite(&jogador->sprite, jogador->posicao);
+}
+
+void desenharOverlayDePausa( Recursos *recursos )
+{
+    al_draw_filled_rectangle(0, 0, LARGURA_TELA, ALTURA_TELA, al_map_rgba(19, 20, 38, 200));
+    al_draw_bitmap(recursos->jogoTelaPausa, 0, 0, 0);
 }

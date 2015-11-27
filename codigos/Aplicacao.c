@@ -5,6 +5,8 @@
  */
 
 #include <allegro5/allegro.h>
+#include <allegro5/allegro_font.h>
+#include <allegro5/allegro_ttf.h>
 
 #include "../cabecalhos/Aplicacao.h"
 
@@ -21,12 +23,15 @@ void inicializar( Aplicacao *aplicacao )
         printf("Não foi possível carregar o addon de imagens.\n");
         aplicacao->contemErros = true;
     }
-
+    
     if( !al_install_keyboard() )
     {
         printf("Falha ao inicializar a integração com o teclado.\n");
         aplicacao->contemErros = true;
-    } 
+    }
+    
+    al_init_font_addon();
+    al_init_ttf_addon();
    
     criarJanela(aplicacao);
     criarFilaDeEventos(aplicacao);
@@ -84,28 +89,39 @@ Recursos obterRecursos( )
 {
     Recursos recursos;
 
-    recursos.menuFundo = al_load_bitmap("./recursos/menu/fundo.png");
-    recursos.menuIconeSelecao = al_load_bitmap("./recursos/menu/iconeSelecao.png");
+    recursos.menuTela = al_load_bitmap("./recursos/imagens/menu/tela.png");
+    recursos.menuIndicador = al_load_bitmap("./recursos/imagens/menu/indicador.png");
     
-    recursos.jogoObstaculo = al_load_bitmap("./recursos/jogo/obstaculo.png");
-    recursos.jogoObstaculoFixo = al_load_bitmap("./recursos/jogo/obstaculoFixo.png");
-    recursos.jogadorDireitaDireita = al_load_bitmap("./recursos/jogo/bombermanDireitaDireita.png");
-    recursos.jogadorDireitaEsquerda = al_load_bitmap("./recursos/jogo/bombermanDireitaEsquerda.png");
-    recursos.jogadorFrenteDireita = al_load_bitmap("./recursos/jogo/bombermanFrenteDireita.png");
-    recursos.jogadorTrasDireita = al_load_bitmap("./recursos/jogo/bombermanTrasDireita.png");
-
+    recursos.jogoFundo = al_load_bitmap("./recursos/imagens/jogo/fundo.png");
+    recursos.jogoRodape = al_load_bitmap("./recursos/imagens/jogo/rodape.png");
+    recursos.jogoObstaculo = al_load_bitmap("./recursos/imagens/jogo/obstaculos/obstaculo.png");
+    recursos.jogoObstaculoFixo = al_load_bitmap("./recursos/imagens/jogo/obstaculos/obstaculoFixo.png");
+    recursos.jogoTelaPausa = al_load_bitmap("./recursos/imagens/jogo/telaPausa.png");
+    recursos.jogadorFrenteSprite = al_load_bitmap("./recursos/imagens/jogo/bomberman/Bomberman_F_Sprite.png");
+    recursos.jogadorFrenteParado = al_load_bitmap("./recursos/imagens/jogo/bomberman/Bomberman_FP.png");
+    recursos.jogadorTrasSprite = al_load_bitmap("./recursos/imagens/jogo/bomberman/Bomberman_T_Sprite.png");
+    recursos.jogadorTrasParado = al_load_bitmap("./recursos/imagens/jogo/bomberman/Bomberman_TP.png");
+    recursos.jogadorLadoSprite = al_load_bitmap("./recursos/imagens/jogo/bomberman/Bomberman_L_Sprite.png");
+    recursos.jogadorLadoParado = al_load_bitmap("./recursos/imagens/jogo/bomberman/Bomberman_LP.png");
+    recursos.monstroFrenteSprite = al_load_bitmap("./recursos/imagens/jogo/monstro/Monstro_F_Sprite.png");
+    recursos.monstroFrenteParado = al_load_bitmap("./recursos/imagens/jogo/monstro/Monstro_FP.png");
+    recursos.monstroTrasSprite = al_load_bitmap("./recursos/imagens/jogo/monstro/Monstro_T_Sprite.png");
+    recursos.monstroTrasParado = al_load_bitmap("./recursos/imagens/jogo/monstro/Monstro_TP.png");
+    recursos.monstroLadoSprite = al_load_bitmap("./recursos/imagens/jogo/monstro/Monstro_L_Sprite.png");
+    recursos.monstroLadoParado = al_load_bitmap("./recursos/imagens/jogo/monstro/Monstro_LP.png");
+    
+    recursos.fonteCantarellRegular = al_load_ttf_font("./recursos/fonte/CantarellRegular.ttf", 40, 0);
+    recursos.fonteCantarellBold = al_load_ttf_font("./recursos/fonte/CantarellBold.ttf", 40, 0);
+    
     return recursos;
 }
 
 void finalizar( Aplicacao* aplicacao )
 {
-    al_destroy_bitmap(aplicacao->recursos.menuFundo);
-    al_destroy_bitmap(aplicacao->recursos.menuIconeSelecao);
+    al_destroy_bitmap(aplicacao->recursos.menuTela);
+    al_destroy_bitmap(aplicacao->recursos.menuIndicador);
+    al_destroy_bitmap(aplicacao->recursos.jogoObstaculo);
     al_destroy_bitmap(aplicacao->recursos.jogoObstaculoFixo);
-    al_destroy_bitmap(aplicacao->recursos.jogadorDireitaDireita);
-    al_destroy_bitmap(aplicacao->recursos.jogadorDireitaEsquerda);
-    al_destroy_bitmap(aplicacao->recursos.jogadorFrenteDireita);
-    al_destroy_bitmap(aplicacao->recursos.jogadorTrasDireita);
     al_destroy_event_queue(aplicacao->filaEventos);
     al_destroy_timer(aplicacao->timerFPS);
     al_destroy_timer(aplicacao->timerRelogio);
