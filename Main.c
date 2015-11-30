@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
+#include <allegro5/bitmap_draw.h>
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
@@ -16,13 +17,15 @@
 int main( )
 {
     bool redesenhar = true;
+    
+    Aplicacao singleton;
+    aplicacao = &singleton;
+    
+    aplicacao->contemErros = false;
 
-    Aplicacao aplicacao;
-    aplicacao.contemErros = false;
+    inicializar(aplicacao);
 
-    inicializar(&aplicacao);
-
-    if( aplicacao.contemErros )
+    if( aplicacao->contemErros )
     {
         return -1;
     }
@@ -31,20 +34,20 @@ int main( )
     definirPadroesDoMenu(&menu);
 
     Jogo jogo;
-    criarNovoJogo(&aplicacao, &jogo);
+    criarNovoJogo(&jogo);
     
-    while(aplicacao.modo != MODO_SAIR)
+    while(aplicacao->modo != MODO_SAIR)
     {
-        while(!al_is_event_queue_empty(aplicacao.filaEventos))
+        while(!al_is_event_queue_empty(aplicacao->filaEventos))
         {
             ALLEGRO_EVENT evento;
-            al_wait_for_event(aplicacao.filaEventos, &evento);
+            al_wait_for_event(aplicacao->filaEventos, &evento);
 
             switch(evento.type)
             {
                 case ALLEGRO_EVENT_DISPLAY_CLOSE:
                 {
-                    aplicacao.modo = MODO_SAIR;
+                    aplicacao->modo = MODO_SAIR;
 
                     break;
                 }
@@ -65,7 +68,7 @@ int main( )
 
                 case ALLEGRO_EVENT_TIMER:
                 {
-                    if( evento.timer.source == aplicacao.timerFPS )
+                    if( evento.timer.source == aplicacao->timerFPS )
                     {
                         redesenhar = true;
                     }
@@ -74,17 +77,17 @@ int main( )
                 }
             }
 
-            switch(aplicacao.modo)
+            switch(aplicacao->modo)
             {
                 case MODO_MENU:
                 {
-                    criarNovoJogo(&aplicacao, &jogo); // "Reseta" o jogo
+                    criarNovoJogo(&jogo); // "Reseta" o jogo
                     
                     processarEventoDoMenu(&menu, evento);
 
                     if( menu.haOpcaoSelecionada )
                     {
-                        aplicacao.modo = menu.opcaoIndicada;
+                        aplicacao->modo = menu.opcaoIndicada;
                         limparConteudoDaJanela();
                     }
 
@@ -96,28 +99,28 @@ int main( )
                     definirPadroesDoMenu(&menu); // Reseta o menu
                     
                     carregarJogoConformeNivel(&jogo, jogo.jogador.nivelAtual);
-                    processarEventoDoJogo(&aplicacao, &jogo, evento);
+                    processarEventoDoJogo(&jogo, evento);
 
                     break;
                 }
             }
 
-            if( redesenhar && al_is_event_queue_empty(aplicacao.filaEventos) )
+            if( redesenhar && al_is_event_queue_empty(aplicacao->filaEventos) )
             {
                 redesenhar = false;
 
-                switch(aplicacao.modo)
+                switch(aplicacao->modo)
                 {
                     case MODO_MENU:
                     {
-                        desenharMenu(&menu, &aplicacao.recursos);
+                        desenharMenu(&menu);
 
                         break;
                     }
 
                     case MODO_JOGO:
                     {
-                        desenharJogo(&jogo, &aplicacao.recursos);
+                        desenharJogo(&jogo);
 
                         break;
                     }
@@ -128,7 +131,7 @@ int main( )
         }
     }
 
-    finalizar(&aplicacao);
+    finalizar(aplicacao);
 
     return 0;
 }

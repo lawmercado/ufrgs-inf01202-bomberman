@@ -20,20 +20,25 @@ typedef struct Recursos {
     ALLEGRO_BITMAP *jogoFundo;
     ALLEGRO_BITMAP *jogoRodape;
     ALLEGRO_BITMAP *jogoObstaculo;
+    ALLEGRO_BITMAP *jogoObstaculoDestruidoSprite;
     ALLEGRO_BITMAP *jogoObstaculoFixo;
+    ALLEGRO_BITMAP *jogoSaida;
     ALLEGRO_BITMAP *jogoTelaPausa;
+    ALLEGRO_BITMAP *jogoBombaSprite;
+    ALLEGRO_BITMAP *jogoRastroSprite;
+    
     ALLEGRO_BITMAP *jogadorFrenteSprite;
     ALLEGRO_BITMAP *jogadorFrenteParado;
     ALLEGRO_BITMAP *jogadorTrasSprite;
     ALLEGRO_BITMAP *jogadorTrasParado;
     ALLEGRO_BITMAP *jogadorLadoSprite;
     ALLEGRO_BITMAP *jogadorLadoParado;
+    ALLEGRO_BITMAP *jogadorMortoSprite;
+    
     ALLEGRO_BITMAP *monstroFrenteSprite;
-    ALLEGRO_BITMAP *monstroFrenteParado;
     ALLEGRO_BITMAP *monstroTrasSprite;
-    ALLEGRO_BITMAP *monstroTrasParado;
     ALLEGRO_BITMAP *monstroLadoSprite;
-    ALLEGRO_BITMAP *monstroLadoParado;
+    ALLEGRO_BITMAP *monstroMortoSprite;
     
     ALLEGRO_FONT *fonteCantarellRegular;
     ALLEGRO_FONT *fonteCantarellBold;
@@ -50,8 +55,10 @@ typedef struct Aplicacao {
     int teclasPressionadas[];
 } Aplicacao;
 
+// Definição das variáveis globais
 bool TeclasPressionadas[ALLEGRO_KEY_MAX];
-        
+Aplicacao *aplicacao;
+
 void inicializar(Aplicacao *aplicacao);
 void criarJanela(Aplicacao *aplicacao);
 void limparConteudoDaJanela();

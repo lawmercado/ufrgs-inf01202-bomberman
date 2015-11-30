@@ -7,11 +7,14 @@
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
+#include <time.h>
 
 #include "../cabecalhos/Aplicacao.h"
 
 void inicializar( Aplicacao *aplicacao )
 {
+    srand(time(NULL));
+    
     if( !al_init() )
     {
         printf("Falha ao iniciar a Allegro.\n");
@@ -95,21 +98,26 @@ Recursos obterRecursos( )
     recursos.jogoFundo = al_load_bitmap("./recursos/imagens/jogo/fundo.png");
     recursos.jogoRodape = al_load_bitmap("./recursos/imagens/jogo/rodape.png");
     recursos.jogoObstaculo = al_load_bitmap("./recursos/imagens/jogo/obstaculos/obstaculo.png");
+    recursos.jogoObstaculoDestruidoSprite = al_load_bitmap("./recursos/imagens/jogo/obstaculos/obstaculoDestruidoSprite.png");
     recursos.jogoObstaculoFixo = al_load_bitmap("./recursos/imagens/jogo/obstaculos/obstaculoFixo.png");
+    recursos.jogoSaida = al_load_bitmap("./recursos/imagens/jogo/portal.png");
     recursos.jogoTelaPausa = al_load_bitmap("./recursos/imagens/jogo/telaPausa.png");
+    recursos.jogoBombaSprite = al_load_bitmap("./recursos/imagens/jogo/bomba/Bomba_Sprite.png");
+    recursos.jogoRastroSprite = al_load_bitmap("./recursos/imagens/jogo/bomba/Rastro_Sprite.png");
+    
     recursos.jogadorFrenteSprite = al_load_bitmap("./recursos/imagens/jogo/bomberman/Bomberman_F_Sprite.png");
     recursos.jogadorFrenteParado = al_load_bitmap("./recursos/imagens/jogo/bomberman/Bomberman_FP.png");
     recursos.jogadorTrasSprite = al_load_bitmap("./recursos/imagens/jogo/bomberman/Bomberman_T_Sprite.png");
     recursos.jogadorTrasParado = al_load_bitmap("./recursos/imagens/jogo/bomberman/Bomberman_TP.png");
     recursos.jogadorLadoSprite = al_load_bitmap("./recursos/imagens/jogo/bomberman/Bomberman_L_Sprite.png");
     recursos.jogadorLadoParado = al_load_bitmap("./recursos/imagens/jogo/bomberman/Bomberman_LP.png");
-    recursos.monstroFrenteSprite = al_load_bitmap("./recursos/imagens/jogo/monstro/Monstro_F_Sprite.png");
-    recursos.monstroFrenteParado = al_load_bitmap("./recursos/imagens/jogo/monstro/Monstro_FP.png");
-    recursos.monstroTrasSprite = al_load_bitmap("./recursos/imagens/jogo/monstro/Monstro_T_Sprite.png");
-    recursos.monstroTrasParado = al_load_bitmap("./recursos/imagens/jogo/monstro/Monstro_TP.png");
-    recursos.monstroLadoSprite = al_load_bitmap("./recursos/imagens/jogo/monstro/Monstro_L_Sprite.png");
-    recursos.monstroLadoParado = al_load_bitmap("./recursos/imagens/jogo/monstro/Monstro_LP.png");
+    recursos.jogadorMortoSprite = al_load_bitmap("./recursos/imagens/jogo/bomberman/Bomberman_M_Sprite.png");
     
+    recursos.monstroFrenteSprite = al_load_bitmap("./recursos/imagens/jogo/monstro/Monstro_F_Sprite.png");
+    recursos.monstroTrasSprite = al_load_bitmap("./recursos/imagens/jogo/monstro/Monstro_T_Sprite.png");
+    recursos.monstroLadoSprite = al_load_bitmap("./recursos/imagens/jogo/monstro/Monstro_L_Sprite.png");
+    recursos.monstroMortoSprite = al_load_bitmap("./recursos/imagens/jogo/monstro/Monstro_M_Sprite.png");
+        
     recursos.fonteCantarellRegular = al_load_ttf_font("./recursos/fonte/CantarellRegular.ttf", 40, 0);
     recursos.fonteCantarellBold = al_load_ttf_font("./recursos/fonte/CantarellBold.ttf", 40, 0);
     

@@ -4,7 +4,13 @@
  * @author Luís Augusto Weber Mercado
  */
 
-Sprite obterSpriteDoMonstroConformeEstado( Monstro *monstro, Recursos *recursos )
+void definirPadroesDoMonstro( Monstro *monstro )
+{
+    monstro->direcaoMovimento = DIRECAO_BAIXO;
+    trocarEstadoDoMonstro(monstro, ENTIDADE_FRENTE);
+}
+
+Sprite obterSpriteDoMonstroPeloEstado( Monstro *monstro )
 {
     Sprite sprite;
 
@@ -13,96 +19,90 @@ Sprite obterSpriteDoMonstroConformeEstado( Monstro *monstro, Recursos *recursos 
     sprite.contadorFrame = 0;
     sprite.delayFrame = 5;
     sprite.larguraFrame = 50;
-    sprite.alturaFrame = 100;
+    sprite.alturaFrame = 50;
     sprite.direcaoAnimacao = 1;
 
-    switch(monstro->estadoPersonagem)
+    switch(monstro->estado)
     {
-        case MONSTRO_TRAS:
+        case ENTIDADE_TRAS:
         {
             sprite.colunasAnimacao = 6;
             sprite.maximoFrames = 6;
-            sprite.imagem = recursos->monstroTrasSprite;
+            sprite.imagem = aplicacao->recursos.monstroTrasSprite;
 
             break;
         }
 
-        case MONSTRO_TRAS_PARADO:
-        {
-            sprite.colunasAnimacao = 0;
-            sprite.maximoFrames = 0;
-            sprite.imagem = recursos->monstroTrasParado;
-
-            break;
-        }
-
-        case MONSTRO_DIREITA:
+        case ENTIDADE_DIREITA:
         {
             sprite.colunasAnimacao = 7;
             sprite.maximoFrames = 7;
-            sprite.imagem = recursos->monstroLadoSprite;
+            sprite.imagem = aplicacao->recursos.monstroLadoSprite;
 
             break;
         }
 
-        case MONSTRO_DIREITA_PARADO:
-        {
-            sprite.colunasAnimacao = 0;
-            sprite.maximoFrames = 0;
-            sprite.imagem = recursos->monstroLadoParado;
-
-            break;
-        }
-
-        case MONSTRO_FRENTE:
+        case ENTIDADE_FRENTE:
         {
             sprite.colunasAnimacao = 6;
             sprite.maximoFrames = 6;
-            sprite.imagem = recursos->monstroFrenteSprite;
+            sprite.imagem = aplicacao->recursos.monstroFrenteSprite;
 
             break;
         }
 
-        case MONSTRO_FRENTE_PARADO:
-        {
-            sprite.colunasAnimacao = 0;
-            sprite.maximoFrames = 0;
-            sprite.imagem = recursos->monstroFrenteParado;
-
-            break;
-        }
-
-        case MONSTRO_ESQUERDA:
+        case ENTIDADE_ESQUERDA:
         {
             sprite.colunasAnimacao = 7;
             sprite.maximoFrames = 7;
-            sprite.imagem = recursos->monstroLadoSprite;
+            sprite.imagem = aplicacao->recursos.monstroLadoSprite;
             sprite.allegroFlag = ALLEGRO_FLIP_HORIZONTAL;
 
             break;
         }
-
-        case MONSTRO_ESQUERDA_PARADO:
+        
+        case ENTIDADE_MORTA:
+        case ENTIDADE_MORRENDO:
         {
-            sprite.colunasAnimacao = 0;
-            sprite.maximoFrames = 0;
-            sprite.imagem = recursos->monstroLadoParado;
-            sprite.allegroFlag = ALLEGRO_FLIP_HORIZONTAL;
-
+            sprite.delayFrame = 10;
+            sprite.colunasAnimacao = 2;
+            sprite.maximoFrames = 2;
+            sprite.imagem = aplicacao->recursos.monstroMortoSprite;
+            
             break;
         }
-
+        
     }
 
     return sprite;
 }
 
-void trocarEstadoDoMonstro( Monstro *monstro, Recursos *recursos, int estado )
+int obterDirecaoDiferenteAleatoria( int direcaoAtual )
+{
+    int numero = rand() % (3 + 1);
+
+    while (numero == direcaoAtual)
+    {
+        numero = rand() % (3 + 1);
+    }
+    
+    return numero;
+}
+
+void trocarEstadoDoMonstro( Monstro *monstro, int estado )
 {
     // Não atualiza a sprite se o estado não estiver mesmo sendo alterado
-    if( monstro->estadoPersonagem != estado )
+    if( monstro->estado != estado )
     {
-        monstro->estadoPersonagem = estado;
-        monstro->sprite = obterSpriteDoMonstroConformeEstado(monstro, recursos);
+        switch( estado )
+        {
+            case ENTIDADE_MORRENDO:
+                monstro->tempo = ENTIDADE_TEMPO_MORTA;
+                
+                break;
+        }
+        
+        monstro->estado = estado;
+        monstro->sprite = obterSpriteDoMonstroPeloEstado(monstro);
     }
 }

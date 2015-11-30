@@ -27,5 +27,8 @@ void atualizarSprite(Sprite *sprite)
 
 void desenharSprite(Sprite *sprite, Posicao posicao)
 {
-    al_draw_bitmap_region(sprite->imagem, sprite->frameCorrente * sprite->larguraFrame, 0, sprite->larguraFrame, sprite->alturaFrame, posicao.x, posicao.y, sprite->allegroFlag);
+    if( sprite->imagem != NULL )
+    {
+        al_draw_bitmap_region(sprite->imagem, sprite->frameCorrente * sprite->larguraFrame, 0, sprite->larguraFrame, sprite->alturaFrame, posicao.x, posicao.y, sprite->allegroFlag);
+    }
 }

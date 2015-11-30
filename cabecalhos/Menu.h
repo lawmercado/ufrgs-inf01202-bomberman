@@ -11,4 +11,4 @@ typedef struct Menu {
 
 void definirPadroesDoMenu();
 void processarEventoDoMenu(Menu *menu, ALLEGRO_EVENT evento);
-void desenharMenu(Menu *menu, Recursos *recursos);
+void desenharMenu(Menu *menu);
