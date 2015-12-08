@@ -11,8 +11,9 @@
 
 #include "./codigos/Aplicacao.c"
 #include "./codigos/Sprite.c"
-#include "./codigos/Menu.c"
 #include "./codigos/Jogo.c"
+#include "./codigos/Menu.c"
+#include "./codigos/Highscores.c"
 
 int main( )
 {
@@ -38,7 +39,7 @@ int main( )
     
     while(aplicacao->modo != MODO_SAIR)
     {
-        while(!al_is_event_queue_empty(aplicacao->filaEventos))
+        if(!al_is_event_queue_empty(aplicacao->filaEventos))
         {
             ALLEGRO_EVENT evento;
             al_wait_for_event(aplicacao->filaEventos, &evento);
@@ -103,6 +104,15 @@ int main( )
 
                     break;
                 }
+                
+                case MODO_HIGHSCORES:
+                {
+                    definirPadroesDoMenu(&menu); // Reseta o menu
+                    
+                    processarEventoDosHighscores(evento);
+
+                    break;
+                }
             }
 
             if( redesenhar && al_is_event_queue_empty(aplicacao->filaEventos) )
@@ -121,6 +131,13 @@ int main( )
                     case MODO_JOGO:
                     {
                         desenharJogo(&jogo);
+
+                        break;
+                    }
+                    
+                    case MODO_HIGHSCORES:
+                    {
+                        desenharHighscores();
 
                         break;
                     }

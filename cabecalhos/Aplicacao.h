@@ -4,6 +4,8 @@
  * @author Luís Augusto Weber Mercado
  */
 
+#include "./Highscores.h"
+
 #define LARGURA_TELA 850
 #define ALTURA_TELA 610
 #define FPS 60
@@ -16,6 +18,9 @@
 typedef struct Recursos {
     ALLEGRO_BITMAP *menuTela;
     ALLEGRO_BITMAP *menuIndicador;
+    ALLEGRO_BITMAP *menuBombaSprite;
+    
+    ALLEGRO_BITMAP *highscoresTela;
     
     ALLEGRO_BITMAP *jogoFundo;
     ALLEGRO_BITMAP *jogoRodape;
@@ -24,6 +29,8 @@ typedef struct Recursos {
     ALLEGRO_BITMAP *jogoObstaculoFixo;
     ALLEGRO_BITMAP *jogoSaida;
     ALLEGRO_BITMAP *jogoTelaPausa;
+    ALLEGRO_BITMAP *jogoTelaGameOver;
+    ALLEGRO_BITMAP *jogoTelaVitoria;
     ALLEGRO_BITMAP *jogoBombaSprite;
     ALLEGRO_BITMAP *jogoRastroSprite;
     
@@ -41,7 +48,11 @@ typedef struct Recursos {
     ALLEGRO_BITMAP *monstroMortoSprite;
     
     ALLEGRO_FONT *fonteCantarellRegular;
+    ALLEGRO_FONT *fonteCantarellRegularPequena;
     ALLEGRO_FONT *fonteCantarellBold;
+    ALLEGRO_FONT *fonteCantarellBoldPequena;
+    
+    Highscore pontuacoes[MAXIMO_LISTA_HIGHSCORES];
 } Recursos;
 
 typedef struct Aplicacao {
@@ -65,4 +76,6 @@ void limparConteudoDaJanela();
 void criarFilaDeEventos(Aplicacao *aplicacao);
 void criarTimers(Aplicacao *aplicacao);
 Recursos obterRecursos();
+void carregarPontuacoes();
+void salvarPontuacoes();
 void finalizar(Aplicacao *aplicacao);

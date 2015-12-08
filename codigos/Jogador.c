@@ -11,15 +11,16 @@ void definirPadroesDoJogador( Jogador *jogador )
     jogador->nivelAtual = 1;
     jogador->pontuacao = 0;
     jogador->maximoDeBombasSimultaneas = JOGADOR_BOMBAS_PERMITIDAS_PADRAO;
+    jogador->nome = al_ustr_new("");
     trocarEstadoDoJogador(jogador, ENTIDADE_FRENTE_PARADA);
 }
 
 Hitbox obterHitboxDoJogador( Jogador *jogador )
 {
     Hitbox hitbox;
-    hitbox.x = jogador->posicao.x + 5;
+    hitbox.x = jogador->posicao.x + 10;
     hitbox.y = jogador->posicao.y + JOGADOR_MARGEM_INICIAL - TAMANHO_SOMBRA + 35;
-    hitbox.xFinal = hitbox.x + TAMANHO_ENTIDADE - 10;
+    hitbox.xFinal = hitbox.x + TAMANHO_ENTIDADE - 20;
     hitbox.yFinal = hitbox.y + TAMANHO_ENTIDADE - 45;
 
     return hitbox;
@@ -112,7 +113,7 @@ Sprite obterSpriteDoJogadorPeloEstado( Jogador *jogador )
 
             break;
         }
-        
+
         case ENTIDADE_MORRENDO:
         case ENTIDADE_MORTA:
         {
@@ -120,7 +121,7 @@ Sprite obterSpriteDoJogadorPeloEstado( Jogador *jogador )
             sprite.colunasAnimacao = 2;
             sprite.maximoFrames = 2;
             sprite.imagem = aplicacao->recursos.jogadorMortoSprite;
-            
+
             break;
         }
 
@@ -134,14 +135,14 @@ void trocarEstadoDoJogador( Jogador *jogador, int estado )
     // Não atualiza a sprite se o estado não estiver mesmo sendo alterado
     if( jogador->estado != estado )
     {
-        switch( estado )
+        switch(estado)
         {
             case ENTIDADE_MORRENDO:
                 jogador->tempo = ENTIDADE_TEMPO_MORTA;
-                
+
                 break;
         }
-        
+
         jogador->estado = estado;
         jogador->sprite = obterSpriteDoJogadorPeloEstado(jogador);
     }
@@ -151,4 +152,27 @@ void moverJogadorConformeIndice( Jogador *jogador, Indice indice )
 {
     jogador->posicao.x = indice.j * TAMANHO_ENTIDADE;
     jogador->posicao.y = indice.i * TAMANHO_ENTIDADE - JOGADOR_MARGEM_INICIAL + TAMANHO_SOMBRA;
+}
+
+void salvarPontuacaoDoJogador( Jogador *jogador )
+{
+    int i = 0, j = 0;
+    
+    for( i = 0; i < MAXIMO_LISTA_HIGHSCORES; i++ )
+    {
+        if( jogador->pontuacao > aplicacao->recursos.pontuacoes[i].pontos )
+        {
+            for( j = (MAXIMO_LISTA_HIGHSCORES - 1); j > i; j-- )
+            {
+                aplicacao->recursos.pontuacoes[j] = aplicacao->recursos.pontuacoes[j - 1];
+            }
+            
+            al_ustr_to_buffer(jogador->nome, aplicacao->recursos.pontuacoes[i].nome, TAMANHO_MAXIMO_NOME);
+            aplicacao->recursos.pontuacoes[i].pontos = jogador->pontuacao;
+            
+            break;
+        }
+    }
+    
+    salvarPontuacoes(aplicacao->recursos.pontuacoes);
 }

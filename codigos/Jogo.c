@@ -1,6 +1,6 @@
-#include <allegro5/events.h>
 #include <stdio.h>
 #include <math.h>
+#include <allegro5/events.h>
 #include <allegro5/keycodes.h>
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_font.h>
@@ -13,23 +13,24 @@
 #include "./Obstaculo.c"
 #include "./Bomba.c"
 
+/**
+ * Cria um jogo "do zero"
+ * 
+ * @param *Jogo jogo Referência ao jogo
+ */
 void criarNovoJogo( Jogo *jogo )
 {
-    jogo->inicializado = false;
     jogo->modo = JOGO_MODO_RODANDO;
     definirPadroesDoJogo(jogo);
     definirPadroesDoJogador(&jogo->jogador);
     definirPadroesDasBombas(jogo);
-
-    int i = 0;
-
-    // Desativa todas as bombas
-    for( i = 0; i < MAXIMO_BOMBAS_PERMITIDAS; i++ )
-    {
-        jogo->bombas[i].estado = BOMBA_DESATIVADA;
-    }
 }
 
+/**
+ * Define os parâmetros default do jogo
+ * 
+ * @param *Jogo jogo Referência ao jogo
+ */
 void definirPadroesDoJogo( Jogo *jogo )
 {
     jogo->tempo = TEMPO_POR_NIVEL;
@@ -40,37 +41,44 @@ void definirPadroesDoJogo( Jogo *jogo )
     jogo->contadorDeObstaculos = 0;
     jogo->contadorDeParedes = 0;
 
-    int i;
-
-    // Desativa todas as bombas
+    TeclasPressionadas[ALLEGRO_KEY_SPACE] = false; // Reseta a tecla de espaço
+    
+    int i = 0;
+    
     for( i = 0; i < MAXIMO_BOMBAS_PERMITIDAS; i++ )
     {
         jogo->bombas[i].estado = BOMBA_DESATIVADA;
     }
-
-    TeclasPressionadas[ALLEGRO_KEY_SPACE] = false; // Reseta a tecla
 }
 
+/**
+ * Conforme o nível, popula as estruturas de jogo
+ * 
+ * @param *Jogo jogo Referência ao jogo
+ * @param integer nivel Nivel a ser carregado
+ * 
+ * @return bool Se o carregamento foi bem sucedido
+ */
 bool carregarJogoConformeNivel( Jogo *jogo, int nivel )
 {
-    if( !jogo->inicializado )
-    {
-        jogo->inicializado = true;
-        jogo->jogador.nivelAtual = nivel;
-    }
-
+    // Se o jogo foi carregado
     if( !jogo->carregado )
     {
         carregarParedesPadroes(jogo);
 
         char nomeArquivo[32];
+        // Cria a string "personalizada" conforme o nivel
         snprintf(nomeArquivo, sizeof (char) * 32, "./recursos/niveis/nivel%i.txt", nivel);
 
         FILE *arquivo = fopen(nomeArquivo, "r");
         if( arquivo == NULL )
         {
             printf("ERRO: Não foi possível ler o arquivo do nível %d!\n", nivel);
+
+            return false;
         }
+
+        printf("Carregando arquivo nivel%d.txt...\n", nivel);
 
         char linha[LARGURA_MAPA_JOGAVEL + 1];
         bool eNovaLinha = false;
@@ -96,23 +104,28 @@ bool carregarJogoConformeNivel( Jogo *jogo, int nivel )
     }
 }
 
+/**
+ * Dado a linha do esqueleto de um nível, popula as estruturas do jogo
+ * 
+ * @param *Jogo jogo Referência ao jogo
+ * @param char[] linha Linha do arquivo
+ * @param integer numeroLinha Número da linha do arquivo
+ */
 void popularJogoConformeLinha( Jogo *jogo, char linha[], int numeroLinha )
 {
-    int i = 0;
+    int j = 0;
 
-    for( i = 0; i < LARGURA_MAPA_JOGAVEL; i++ )
+    for( j = 0; j < LARGURA_MAPA_JOGAVEL; j++ )
     {
-        switch(linha[i])
+        switch(linha[j])
         {
             case 'B':
             {
-                Indice indice = {(i + 1), (numeroLinha + 1)};
+                Indice indice = {(numeroLinha + 1), (j + 1)};
 
                 moverJogadorConformeIndice(&jogo->jogador, indice);
-                jogo->jogador.indice.i = (numeroLinha + 1);
-                jogo->jogador.indice.j = (i + 1);
-                jogo->jogador.indiceInicial.i = (numeroLinha + 1);
-                jogo->jogador.indiceInicial.j = (i + 1);
+                jogo->jogador.indice = indice;
+                jogo->jogador.indiceInicial = indice;
 
                 break;
             }
@@ -120,20 +133,20 @@ void popularJogoConformeLinha( Jogo *jogo, char linha[], int numeroLinha )
             case 'S':
             {
                 jogo->saida.estado = ENTIDADE_INVISIVEL;
-                jogo->saida.posicao.x = (i + 1) * TAMANHO_ENTIDADE;
+                jogo->saida.posicao.x = (j + 1) * TAMANHO_ENTIDADE;
                 jogo->saida.posicao.y = (numeroLinha + 1) * TAMANHO_ENTIDADE;
                 jogo->saida.indice.i = (numeroLinha + 1);
-                jogo->saida.indice.j = (i + 1);
+                jogo->saida.indice.j = (j + 1);
 
                 break;
             }
 
             case 'M':
             {
-                jogo->monstros[jogo->contadorDeMonstros].posicao.x = (i + 1) * TAMANHO_ENTIDADE;
+                jogo->monstros[jogo->contadorDeMonstros].posicao.x = (j + 1) * TAMANHO_ENTIDADE;
                 jogo->monstros[jogo->contadorDeMonstros].posicao.y = (numeroLinha + 1) * TAMANHO_ENTIDADE;
                 jogo->monstros[jogo->contadorDeMonstros].indice.i = (numeroLinha + 1);
-                jogo->monstros[jogo->contadorDeMonstros].indice.j = (i + 1);
+                jogo->monstros[jogo->contadorDeMonstros].indice.j = (j + 1);
 
                 definirPadroesDoMonstro(&jogo->monstros[jogo->contadorDeMonstros]);
 
@@ -144,10 +157,10 @@ void popularJogoConformeLinha( Jogo *jogo, char linha[], int numeroLinha )
 
             case 'P':
             {
-                jogo->paredes[jogo->contadorDeParedes].posicao.x = (i + 1) * TAMANHO_ENTIDADE;
+                jogo->paredes[jogo->contadorDeParedes].posicao.x = (j + 1) * TAMANHO_ENTIDADE;
                 jogo->paredes[jogo->contadorDeParedes].posicao.y = (numeroLinha + 1) * TAMANHO_ENTIDADE;
                 jogo->paredes[jogo->contadorDeParedes].indice.i = (numeroLinha + 1);
-                jogo->paredes[jogo->contadorDeParedes].indice.j = (i + 1);
+                jogo->paredes[jogo->contadorDeParedes].indice.j = (j + 1);
 
                 jogo->contadorDeParedes = jogo->contadorDeParedes + 1;
 
@@ -156,10 +169,10 @@ void popularJogoConformeLinha( Jogo *jogo, char linha[], int numeroLinha )
 
             case 'O':
             {
-                jogo->obstaculos[jogo->contadorDeObstaculos].posicao.x = (i + 1) * TAMANHO_ENTIDADE;
+                jogo->obstaculos[jogo->contadorDeObstaculos].posicao.x = (j + 1) * TAMANHO_ENTIDADE;
                 jogo->obstaculos[jogo->contadorDeObstaculos].posicao.y = (numeroLinha + 1) * TAMANHO_ENTIDADE;
                 jogo->obstaculos[jogo->contadorDeObstaculos].indice.i = (numeroLinha + 1);
-                jogo->obstaculos[jogo->contadorDeObstaculos].indice.j = (i + 1);
+                jogo->obstaculos[jogo->contadorDeObstaculos].indice.j = (j + 1);
 
                 definirPadroesDoObstaculo(&jogo->obstaculos[jogo->contadorDeObstaculos]);
 
@@ -171,10 +184,16 @@ void popularJogoConformeLinha( Jogo *jogo, char linha[], int numeroLinha )
     }
 }
 
+/**
+ * Carrega as paredes do mapa em si, fixas do jogo
+ * 
+ * @param *Jogo jogo Referência ao jogo
+ */
 void carregarParedesPadroes( Jogo *jogo )
 {
     int i, j;
-
+    
+    // Popula as paredes das colunas
     for( j = 0; j < LARGURA_MAPA_JOGAVEL + 2; j++ )
     {
         jogo->paredes[jogo->contadorDeParedes].posicao.x = j * TAMANHO_ENTIDADE;
@@ -192,7 +211,8 @@ void carregarParedesPadroes( Jogo *jogo )
         jogo->contadorDeParedes = jogo->contadorDeParedes + 1;
     }
 
-    for( i = 0; i < ALTURA_MAPA_JOGAVEL + 2; i++ ) // +2 por causa das paredes
+    // Popula as paredes das linhas
+    for( i = 0; i < ALTURA_MAPA_JOGAVEL + 2; i++ )
     {
         jogo->paredes[jogo->contadorDeParedes].posicao.x = 0 * TAMANHO_ENTIDADE;
         jogo->paredes[jogo->contadorDeParedes].posicao.y = i * TAMANHO_ENTIDADE;
@@ -210,15 +230,17 @@ void carregarParedesPadroes( Jogo *jogo )
     }
 }
 
+/**
+ * Reponsável por tratar os eventos provindos do jogo
+ * 
+ * @param *Jogo jogo Referência ao jogo
+ * @param ALLEGRO_EVENT evento Evento pego pela aplicação
+ */
 void processarEventoDoJogo( Jogo *jogo, ALLEGRO_EVENT evento )
 {
     Jogador *jogador;
     jogador = &jogo->jogador;
-    int i = 0;
-    int j = 0;
-    int k = 0;
-
-
+    
     switch(evento.type)
     {
         case ALLEGRO_EVENT_TIMER:
@@ -232,26 +254,32 @@ void processarEventoDoJogo( Jogo *jogo, ALLEGRO_EVENT evento )
                     }
                     else if( evento.timer.source == aplicacao->timerRelogio )
                     {
-                        if( jogo->tempo == 0 )
-                        {
-                            jogo->tempo = TEMPO_POR_NIVEL;
-                        }
 
-                        jogo->tempo = jogo->tempo - 1;
-
-                        if( jogo->jogador.estado == ENTIDADE_MORRENDO && jogo->jogador.tempo == 0 )
+                        if( (jogo->jogador.estado == ENTIDADE_MORRENDO && jogo->jogador.tempo == 0) || jogo->tempo == 0 )
                         {
                             trocarEstadoDoJogador(&jogo->jogador, ENTIDADE_FRENTE_PARADA);
 
-                            // Reinicia o level
-                            jogador->vidas--;
-                            definirPadroesDoJogo(jogo);
+                            if( (jogador->vidas - 1) >= 0 )
+                            {
+                                jogador->vidas--;
+                                definirPadroesDoJogo(jogo);
+                            }
+                            else
+                            {
+                                jogo->modo = JOGO_MODO_GAMEOVER;
+                            }
+
                         }
                         else
                         {
                             jogo->jogador.tempo--;
                         }
 
+                        jogo->tempo--;
+                        
+                        int i, j, k; // Variáveis dos índices
+                        
+                        // Altera os estados dos monstros
                         for( i = 0; i < jogo->contadorDeMonstros; i++ )
                         {
                             if( jogo->monstros[i].estado == ENTIDADE_MORRENDO && jogo->monstros[i].tempo == 0 )
@@ -264,6 +292,7 @@ void processarEventoDoJogo( Jogo *jogo, ALLEGRO_EVENT evento )
                             }
                         }
 
+                        // Altera os estados dos obstáculos
                         for( i = 0; i < jogo->contadorDeObstaculos; i++ )
                         {
                             if( jogo->obstaculos[i].estado == ENTIDADE_MORRENDO )
@@ -278,19 +307,21 @@ void processarEventoDoJogo( Jogo *jogo, ALLEGRO_EVENT evento )
                                 }
                             }
                         }
-
+                        
+                        // Altera os estados das bombas conforme os segundos passados
                         for( i = 0; i < MAXIMO_BOMBAS_PERMITIDAS; i++ )
                         {
                             if( jogo->bombas[i].estado == BOMBA_PREPARADA )
                             {
                                 jogo->bombas[i].tempoAteExplodir--;
 
-                                // Explodiu
+                                // Caso tenha explodido
                                 if( jogo->bombas[i].tempoAteExplodir == 0 )
                                 {
                                     jogo->bombas[i].tempoExplodindo = BOMBA_TEMPO_EXPLOSAO;
                                     jogo->bombas[i].estado = BOMBA_EXPLODINDO;
-
+                                    
+                                    // Cria as explosões nas quatro direções
                                     for( j = 0; j < 4; j++ )
                                     {
                                         for( k = 0; k < jogo->bombas[i].raioDeExplosao; k++ )
@@ -330,7 +361,8 @@ void processarEventoDoJogo( Jogo *jogo, ALLEGRO_EVENT evento )
                                             }
                                         }
                                     }
-
+                                    
+                                    // Verifica qualquer possível impacto da bomba no jogo
                                     verificarImpactoDaBombaNoJogo(&jogo->bombas[i], jogo);
                                 }
                             }
@@ -367,11 +399,326 @@ void processarEventoDoJogo( Jogo *jogo, ALLEGRO_EVENT evento )
                     }
 
                     break;
+
+                case JOGO_MODO_GAMEOVER:
+                    if( evento.timer.source == aplicacao->timerFPS )
+                    {
+                        processarTickFPSJogoGameOver(jogo);
+                    }
+
+                    break;
+            }
+        }
+        
+        case ALLEGRO_EVENT_KEY_CHAR:
+        {
+            switch(jogo->modo)
+            {
+                case JOGO_MODO_GAMEOVER:
+                {
+                    if( evento.keyboard.keycode == ALLEGRO_KEY_BACKSPACE )
+                    {
+                        if( al_ustr_size(jogo->jogador.nome) > 0 )
+                        {
+                            if( !al_ustr_remove_chr(jogo->jogador.nome, al_ustr_size(jogo->jogador.nome) - 1) )
+                            {
+                                char bufferAuxiliar[TAMANHO_MAXIMO_NOME];
+                                
+                                al_ustr_to_buffer(jogo->jogador.nome, bufferAuxiliar, al_ustr_size(jogo->jogador.nome) - 1);
+                                
+                                jogo->jogador.nome = al_ustr_new_from_buffer(bufferAuxiliar, al_ustr_size(jogo->jogador.nome) - 2);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        int unichar = evento.keyboard.unichar;
+
+                        if( unichar >= 32 )
+                        {
+                            if( al_ustr_size(jogo->jogador.nome) < TAMANHO_MAXIMO_NOME )
+                            {
+                                al_ustr_append_chr(jogo->jogador.nome, unichar);
+
+                            }
+                        }
+                    }
+
+                    break;
+                }
             }
         }
     }
 }
 
+/**
+ * Processa o tick do FPS do jogo
+ * 
+ * @param *Jogo jogo Referência do jogo
+ */
+void processarTickFPSJogoRodando( Jogo *jogo )
+{
+    Jogador *jogador;
+    jogador = &jogo->jogador;
+    int i = 0;
+
+    if( jogador->estado != ENTIDADE_MORRENDO )
+    {
+        if( TeclasPressionadas[ALLEGRO_KEY_UP] )
+        {
+            jogador->direcaoMovimento = DIRECAO_CIMA;
+
+            trocarEstadoDoJogador(jogador, ENTIDADE_TRAS);
+        }
+        else if( TeclasPressionadas[ALLEGRO_KEY_RIGHT] )
+        {
+            jogador->direcaoMovimento = DIRECAO_DIREITA;
+
+            trocarEstadoDoJogador(jogador, ENTIDADE_DIREITA);
+        }
+        else if( TeclasPressionadas[ALLEGRO_KEY_DOWN] )
+        {
+            jogador->direcaoMovimento = DIRECAO_BAIXO;
+
+            trocarEstadoDoJogador(jogador, ENTIDADE_FRENTE);
+        }
+        else if( TeclasPressionadas[ALLEGRO_KEY_LEFT] )
+        {
+            jogador->direcaoMovimento = DIRECAO_ESQUERDA;
+
+            trocarEstadoDoJogador(jogador, ENTIDADE_ESQUERDA);
+        }
+        else if( TeclasPressionadas[ALLEGRO_KEY_SPACE] )
+        {
+            plantarBomba(jogo);
+        }
+        else if( TeclasPressionadas[ALLEGRO_KEY_ESCAPE] )
+        {
+            jogo->modo = JOGO_MODO_PAUSADO;
+            TeclasPressionadas[ALLEGRO_KEY_ESCAPE] = false; // "Desativa" a tecla
+        }
+        else
+        {
+            // As constantes de estado pares referem-se ao bomberman em movimento
+            // Só troca caso o jogador esteja "em movimento"
+            if( jogador->estado % 2 == 0 )
+            {
+                trocarEstadoDoJogador(jogador, jogador->estado + 1);
+            }
+
+            jogador->direcaoMovimento = DIRECAO_NULA;
+        }
+
+        if( jogador->direcaoMovimento != DIRECAO_NULA )
+        {
+            alterarPosicaoPelaDirecao(&jogador->posicao, JOGADOR_TAMANHO_PASSO, jogador->direcaoMovimento);
+
+            for( i = 0; i < jogo->contadorDeParedes; i++ )
+            {
+                if( obterCondicaoDeDestinoPelaDirecao(jogador->indice, jogo->paredes[i].indice, jogador->direcaoMovimento) )
+                {
+                    if( verificarColisao(obterHitboxDoJogador(jogador), obterHitboxPelaPosicao(jogo->paredes[i].posicao)) )
+                    {
+                        alterarPosicaoPelaDirecao(&jogador->posicao, JOGADOR_TAMANHO_PASSO, obterDirecaoOposta(jogador->direcaoMovimento));
+                    }
+                }
+            }
+
+            for( i = 0; i < jogo->contadorDeObstaculos; i++ )
+            {
+                if( jogo->obstaculos[i].estado == ENTIDADE_VISIVEL )
+                {
+                    if( obterCondicaoDeDestinoPelaDirecao(jogador->indice, jogo->obstaculos[i].indice, jogador->direcaoMovimento) )
+                    {
+                        if( verificarColisao(obterHitboxDoJogador(jogador), obterHitboxPelaPosicao(jogo->obstaculos[i].posicao)) )
+                        {
+                            alterarPosicaoPelaDirecao(&jogador->posicao, JOGADOR_TAMANHO_PASSO, obterDirecaoOposta(jogador->direcaoMovimento));
+                        }
+                    }
+                }
+            }
+
+            for( i = 0; i < jogo->contadorDeMonstros; i++ )
+            {
+                if( jogo->monstros[i].estado != ENTIDADE_MORTA && jogo->monstros[i].estado != ENTIDADE_MORRENDO )
+                {
+                    if( obterCondicaoDeDestinoPelaDirecao(jogador->indice, jogo->monstros[i].indice, jogador->direcaoMovimento) )
+                    {
+                        if( verificarColisao(obterHitboxDoJogador(jogador), obterHitboxPelaPosicao(jogo->monstros[i].posicao)) )
+                        {
+                            alterarPosicaoPelaDirecao(&jogador->posicao, JOGADOR_TAMANHO_PASSO, obterDirecaoOposta(jogador->direcaoMovimento));
+
+                            trocarEstadoDoJogador(jogador, ENTIDADE_MORRENDO);
+                        }
+                    }
+                }
+            }
+
+            if( jogo->saida.estado == ENTIDADE_INVISIVEL )
+            {
+                if( obterCondicaoDeDestinoPelaDirecao(jogador->indice, jogo->saida.indice, jogador->direcaoMovimento) )
+                {
+                    if( verificarColisao(obterHitboxDoJogador(jogador), obterHitboxPelaPosicao(jogo->saida.posicao)) )
+                    {
+                        alterarPosicaoPelaDirecao(&jogador->posicao, JOGADOR_TAMANHO_PASSO, obterDirecaoOposta(jogador->direcaoMovimento));
+                    }
+                }
+            }
+            else if( jogo->saida.estado == ENTIDADE_VISIVEL )
+            {
+                if( obterCondicaoDeDestinoPelaDirecao(jogador->indice, jogo->saida.indice, jogador->direcaoMovimento) )
+                {
+                    if( verificarColisao(obterHitboxDoJogador(jogador), obterHitboxPelaPosicao(jogo->saida.posicao)) )
+                    {
+                        // Atualiza a pontuação
+                        jogo->jogador.pontuacao += jogo->tempo * JOGADOR_PONTUACAO_POR_TEMPO;
+                        
+                        if( jogo->jogador.nivelAtual < JOGADOR_NIVEL_MAXIMO )
+                        {
+                            jogo->jogador.nivelAtual++;
+                            definirPadroesDoJogo(jogo);
+                        }
+                        else
+                        {
+                            jogo->modo = JOGO_MODO_GAMEOVER;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Atualiza o indice do jogador
+        jogador->indice = obterPosicaoBrutaDoJogador(obterHitboxDoJogador(jogador));
+    }
+
+    Monstro *monstro;
+    int j;
+
+    // Movimenta os monstros
+    for( i = 0; i < jogo->contadorDeMonstros; i++ )
+    {
+        if( jogo->monstros[i].estado != ENTIDADE_MORTA && jogo->monstros[i].estado != ENTIDADE_MORRENDO )
+        {
+            monstro = &jogo->monstros[i];
+            alterarPosicaoPelaDirecao(&(monstro->posicao), MONSTRO_TAMANHO_PASSO, monstro->direcaoMovimento);
+
+            for( j = 0; j < jogo->contadorDeParedes; j++ )
+            {
+                if( obterCondicaoDeDestinoPelaDirecao(monstro->indice, jogo->paredes[j].indice, monstro->direcaoMovimento) )
+                {
+                    if( verificarColisao(obterHitboxPelaPosicao(monstro->posicao), obterHitboxPelaPosicao(jogo->paredes[j].posicao)) )
+                    {
+                        alterarPosicaoPelaDirecao(&(monstro->posicao), MONSTRO_TAMANHO_PASSO, obterDirecaoOposta(monstro->direcaoMovimento));
+
+                        monstro->direcaoMovimento = obterDirecaoDiferenteAleatoria(monstro->direcaoMovimento);
+                    }
+                }
+            }
+
+            for( j = 0; j < jogo->contadorDeObstaculos; j++ )
+            {
+                if( jogo->obstaculos[j].estado == ENTIDADE_VISIVEL )
+                {
+                    if( obterCondicaoDeDestinoPelaDirecao(monstro->indice, jogo->obstaculos[j].indice, monstro->direcaoMovimento) )
+                    {
+                        if( verificarColisao(obterHitboxPelaPosicao(monstro->posicao), obterHitboxPelaPosicao(jogo->obstaculos[j].posicao)) )
+                        {
+                            alterarPosicaoPelaDirecao(&(monstro->posicao), MONSTRO_TAMANHO_PASSO, obterDirecaoOposta(monstro->direcaoMovimento));
+
+                            monstro->direcaoMovimento = obterDirecaoDiferenteAleatoria(monstro->direcaoMovimento);
+                        }
+                    }
+                }
+            }
+
+            if( obterCondicaoDeDestinoPelaDirecao(monstro->indice, jogo->saida.indice, monstro->direcaoMovimento) )
+            {
+                // Apenas se a saída estiver escondida
+                if( jogo->saida.estado == ENTIDADE_INVISIVEL )
+                {
+                    if( verificarColisao(obterHitboxPelaPosicao(monstro->posicao), obterHitboxPelaPosicao(jogo->saida.posicao)) )
+                    {
+                        alterarPosicaoPelaDirecao(&monstro->posicao, MONSTRO_TAMANHO_PASSO, obterDirecaoOposta(monstro->direcaoMovimento));
+
+                        monstro->direcaoMovimento = obterDirecaoDiferenteAleatoria(monstro->direcaoMovimento);
+                    }
+                }
+            }
+
+            // Verifica se colide com o jogador
+            if( verificarColisao(obterHitboxPelaPosicao(monstro->posicao), obterHitboxDoJogador(jogador)) && jogador->estado != ENTIDADE_MORTA )
+            {
+                alterarPosicaoPelaDirecao(&(monstro->posicao), MONSTRO_TAMANHO_PASSO, obterDirecaoOposta(monstro->direcaoMovimento));
+
+                // Mata o jogador
+                trocarEstadoDoJogador(jogador, ENTIDADE_MORRENDO);
+
+            }
+
+            trocarEstadoDoMonstro(monstro, obterEstadoPelaDirecao(monstro->direcaoMovimento));
+
+            // Atualiza o indice do jogador
+            monstro->indice = obterPosicaoBruta(monstro->posicao);
+        }
+    }
+
+    // Verifica as bombas
+    for( i = 0; i < jogo->contadorDeBombas; i++ )
+    {
+        if( jogo->bombas[i].estado == BOMBA_EXPLODINDO )
+        {
+            verificarImpactoDaBombaNoJogo(&jogo->bombas[i], jogo);
+        }
+    }
+}
+
+/**
+ * Processa o tick do FPS quando o jogo está pausado
+ * 
+ * @param *Jogo jogo Referência do jogo
+ */
+void processarTickFPSJogoPausado( Jogo *jogo )
+{
+    if( TeclasPressionadas[ALLEGRO_KEY_ESCAPE] )
+    {
+        // Caso aperte novamente o ESC, sai da partida
+        aplicacao->modo = MODO_MENU;
+    }
+    else if( TeclasPressionadas[ALLEGRO_KEY_SPACE] )
+    {
+        // Caso apertar espaço, volta ao jogo
+        jogo->modo = JOGO_MODO_RODANDO;
+        
+        // Corrige o bug de sair da tela de pause e plantar uma bomba
+        TeclasPressionadas[ALLEGRO_KEY_SPACE] = false;
+    }
+}
+
+/**
+ * Processa o tick do FPS quando o jogo está em modo game over
+ * 
+ * @param *Jogo jogo Referência do jogo
+ */
+void processarTickFPSJogoGameOver( Jogo *jogo )
+{
+    if( TeclasPressionadas[ALLEGRO_KEY_ENTER] )
+    {
+        salvarPontuacaoDoJogador(&jogo->jogador);
+
+        aplicacao->modo = MODO_MENU;
+    }
+    else if( TeclasPressionadas[ALLEGRO_KEY_ESCAPE] )
+    {
+        aplicacao->modo = MODO_MENU;
+    }
+}
+
+/**
+ * Verifica o impacto da bomba (atingiu alguma entidade) e toma as devidas providências
+ * 
+ * @param *Bomba bomba Bomba a ser verificada
+ * @param *Jogo jogo Referência do jogo
+ */
 void verificarImpactoDaBombaNoJogo( Bomba *bomba, Jogo *jogo )
 {
     int i, j;
@@ -484,8 +831,12 @@ void verificarImpactoDaBombaNoJogo( Bomba *bomba, Jogo *jogo )
             }
         }
 
+        bool monstroAtingido = false;
+        
         for( j = 0; j < jogo->contadorDeMonstros; j++ )
         {
+            monstroAtingido = false;
+            
             if( jogo->monstros[j].estado != ENTIDADE_MORRENDO && jogo->monstros[j].estado != ENTIDADE_MORTA )
             {
                 if( bomba->explosoesCima[i].estado != ENTIDADE_INVISIVEL )
@@ -494,270 +845,122 @@ void verificarImpactoDaBombaNoJogo( Bomba *bomba, Jogo *jogo )
                     {
                         trocarEstadoDoMonstro(&jogo->monstros[j], ENTIDADE_MORRENDO);
                         jogo->jogador.pontuacao += JOGADOR_PONTUACAO_POR_MONSTRO;
+                        
+                        monstroAtingido = true;
                     }
                 }
 
-                if( bomba->explosoesDireita[i].estado != ENTIDADE_INVISIVEL )
+                if( bomba->explosoesDireita[i].estado != ENTIDADE_INVISIVEL && !monstroAtingido )
                 {
                     if( verificarColisao(hitboxExplosaoDireita, obterHitboxPelaPosicao(jogo->monstros[j].posicao)) )
                     {
                         trocarEstadoDoMonstro(&jogo->monstros[j], ENTIDADE_MORRENDO);
                         jogo->jogador.pontuacao += JOGADOR_PONTUACAO_POR_MONSTRO;
+                        
+                        monstroAtingido = true;
                     }
                 }
 
-                if( bomba->explosoesBaixo[i].estado != ENTIDADE_INVISIVEL )
+                if( bomba->explosoesBaixo[i].estado != ENTIDADE_INVISIVEL && !monstroAtingido )
                 {
                     if( verificarColisao(hitboxExplosaoBaixo, obterHitboxPelaPosicao(jogo->monstros[j].posicao)) )
                     {
                         trocarEstadoDoMonstro(&jogo->monstros[j], ENTIDADE_MORRENDO);
                         jogo->jogador.pontuacao += JOGADOR_PONTUACAO_POR_MONSTRO;
+                        
+                        monstroAtingido = true;
                     }
                 }
 
-                if( bomba->explosoesEsquerda[i].estado != ENTIDADE_INVISIVEL )
+                if( bomba->explosoesEsquerda[i].estado != ENTIDADE_INVISIVEL && !monstroAtingido )
                 {
                     if( verificarColisao(hitboxExplosaoEsquerda, obterHitboxPelaPosicao(jogo->monstros[j].posicao)) )
                     {
                         trocarEstadoDoMonstro(&jogo->monstros[j], ENTIDADE_MORRENDO);
                         jogo->jogador.pontuacao += JOGADOR_PONTUACAO_POR_MONSTRO;
+                        
+                        monstroAtingido = true;
                     }
                 }
 
-                if( verificarColisao(obterHitboxDaBomba(bomba), obterHitboxPelaPosicao(jogo->monstros[j].posicao)) )
+                if( verificarColisao(obterHitboxDaBomba(bomba), obterHitboxPelaPosicao(jogo->monstros[j].posicao)) && !monstroAtingido )
                 {
                     trocarEstadoDoMonstro(&jogo->monstros[j], ENTIDADE_MORRENDO);
                     jogo->jogador.pontuacao += JOGADOR_PONTUACAO_POR_MONSTRO;
                 }
             }
         }
-
+        
         if( bomba->explosoesCima[i].estado != ENTIDADE_INVISIVEL )
         {
-            if( verificarColisao(hitboxExplosaoCima, obterHitboxDoJogador(&jogo->jogador)) )
+            if( (jogo->jogador.estado != ENTIDADE_MORRENDO || jogo->jogador.estado != ENTIDADE_MORTA) && verificarColisao(hitboxExplosaoCima, obterHitboxDoJogador(&jogo->jogador)) )
             {
                 trocarEstadoDoJogador(&jogo->jogador, ENTIDADE_MORRENDO);
+            }
+
+            if( verificarColisao(hitboxExplosaoCima, obterHitboxPelaPosicao(jogo->saida.posicao)) )
+            {
+                jogo->saida.estado = ENTIDADE_VISIVEL;
             }
         }
 
         if( bomba->explosoesDireita[i].estado != ENTIDADE_INVISIVEL )
         {
-            if( verificarColisao(hitboxExplosaoDireita, obterHitboxDoJogador(&jogo->jogador)) )
+            if( (jogo->jogador.estado != ENTIDADE_MORRENDO || jogo->jogador.estado != ENTIDADE_MORTA) && verificarColisao(hitboxExplosaoDireita, obterHitboxDoJogador(&jogo->jogador)) )
             {
                 trocarEstadoDoJogador(&jogo->jogador, ENTIDADE_MORRENDO);
+            }
+
+            if( verificarColisao(hitboxExplosaoDireita, obterHitboxPelaPosicao(jogo->saida.posicao)) )
+            {
+                jogo->saida.estado = ENTIDADE_VISIVEL;
             }
         }
 
         if( bomba->explosoesBaixo[i].estado != ENTIDADE_INVISIVEL )
         {
-            if( verificarColisao(hitboxExplosaoBaixo, obterHitboxDoJogador(&jogo->jogador)) )
+            if( (jogo->jogador.estado != ENTIDADE_MORRENDO || jogo->jogador.estado != ENTIDADE_MORTA) && verificarColisao(hitboxExplosaoBaixo, obterHitboxDoJogador(&jogo->jogador)) )
             {
                 trocarEstadoDoJogador(&jogo->jogador, ENTIDADE_MORRENDO);
+            }
+
+            if( verificarColisao(hitboxExplosaoBaixo, obterHitboxPelaPosicao(jogo->saida.posicao)) )
+            {
+                jogo->saida.estado = ENTIDADE_VISIVEL;
             }
         }
 
         if( bomba->explosoesEsquerda[i].estado != ENTIDADE_INVISIVEL )
         {
-            if( verificarColisao(hitboxExplosaoEsquerda, obterHitboxDoJogador(&jogo->jogador)) )
+            if( (jogo->jogador.estado != ENTIDADE_MORRENDO || jogo->jogador.estado != ENTIDADE_MORTA) && verificarColisao(hitboxExplosaoEsquerda, obterHitboxDoJogador(&jogo->jogador)) )
             {
                 trocarEstadoDoJogador(&jogo->jogador, ENTIDADE_MORRENDO);
             }
+
+            if( verificarColisao(hitboxExplosaoEsquerda, obterHitboxPelaPosicao(jogo->saida.posicao)) )
+            {
+                jogo->saida.estado = ENTIDADE_VISIVEL;
+            }
         }
 
-        if( verificarColisao(obterHitboxDaBomba(bomba), obterHitboxDoJogador(&jogo->jogador)) )
+        // Se o jogador atingiu a bomba mesmo
+        if( (jogo->jogador.estado != ENTIDADE_MORRENDO || jogo->jogador.estado != ENTIDADE_MORTA) && verificarColisao(obterHitboxDaBomba(bomba), obterHitboxDoJogador(&jogo->jogador)) )
         {
             trocarEstadoDoJogador(&jogo->jogador, ENTIDADE_MORRENDO);
         }
     }
 }
 
-void processarTickFPSJogoRodando( Jogo *jogo )
-{
-    Jogador *jogador;
-    jogador = &jogo->jogador;
-    int i = 0;
-
-    if( jogador->estado != ENTIDADE_MORRENDO )
-    {
-        if( TeclasPressionadas[ALLEGRO_KEY_UP] )
-        {
-            jogador->direcaoMovimento = DIRECAO_CIMA;
-
-            trocarEstadoDoJogador(jogador, ENTIDADE_TRAS);
-        }
-        else if( TeclasPressionadas[ALLEGRO_KEY_RIGHT] )
-        {
-            jogador->direcaoMovimento = DIRECAO_DIREITA;
-
-            trocarEstadoDoJogador(jogador, ENTIDADE_DIREITA);
-        }
-        else if( TeclasPressionadas[ALLEGRO_KEY_DOWN] )
-        {
-            jogador->direcaoMovimento = DIRECAO_BAIXO;
-
-            trocarEstadoDoJogador(jogador, ENTIDADE_FRENTE);
-        }
-        else if( TeclasPressionadas[ALLEGRO_KEY_LEFT] )
-        {
-            jogador->direcaoMovimento = DIRECAO_ESQUERDA;
-
-            trocarEstadoDoJogador(jogador, ENTIDADE_ESQUERDA);
-        }
-        else if( TeclasPressionadas[ALLEGRO_KEY_SPACE] )
-        {
-            plantarBomba(jogo);
-        }
-        else if( TeclasPressionadas[ALLEGRO_KEY_ESCAPE] )
-        {
-            jogo->modo = JOGO_MODO_PAUSADO;
-            TeclasPressionadas[ALLEGRO_KEY_ESCAPE] = false; // "Desativa" a tecla
-        }
-        else
-        {
-            // As constantes de estado pares referem-se ao bomberman em movimento
-            // Só troca caso o jogador esteja "em movimento"
-            if( jogador->estado % 2 == 0 )
-            {
-                trocarEstadoDoJogador(jogador, jogador->estado + 1);
-            }
-
-            jogador->direcaoMovimento = DIRECAO_NULA;
-        }
-
-        if( jogador->direcaoMovimento != DIRECAO_NULA )
-        {
-            alterarPosicaoPelaDirecao(&jogador->posicao, JOGADOR_TAMANHO_PASSO, jogador->direcaoMovimento);
-
-            for( i = 0; i < jogo->contadorDeParedes; i++ )
-            {
-                if( obterCondicaoDeDestinoPelaDirecao(jogador->indice, jogo->paredes[i].indice, jogador->direcaoMovimento) )
-                {
-                    if( verificarColisao(obterHitboxDoJogador(jogador), obterHitboxPelaPosicao(jogo->paredes[i].posicao)) )
-                    {
-                        alterarPosicaoPelaDirecao(&jogador->posicao, JOGADOR_TAMANHO_PASSO, obterDirecaoOposta(jogador->direcaoMovimento));
-                    }
-                }
-            }
-
-            for( i = 0; i < jogo->contadorDeObstaculos; i++ )
-            {
-                if( jogo->obstaculos[i].estado == ENTIDADE_VISIVEL )
-                {
-                    if( obterCondicaoDeDestinoPelaDirecao(jogador->indice, jogo->obstaculos[i].indice, jogador->direcaoMovimento) )
-                    {
-                        if( verificarColisao(obterHitboxDoJogador(jogador), obterHitboxPelaPosicao(jogo->obstaculos[i].posicao)) )
-                        {
-                            alterarPosicaoPelaDirecao(&jogador->posicao, JOGADOR_TAMANHO_PASSO, obterDirecaoOposta(jogador->direcaoMovimento));
-                        }
-                    }
-                }
-            }
-
-            for( i = 0; i < jogo->contadorDeMonstros; i++ )
-            {
-                if( jogo->monstros[i].estado != ENTIDADE_MORTA && jogo->monstros[i].estado != ENTIDADE_MORRENDO )
-                {
-                    if( obterCondicaoDeDestinoPelaDirecao(jogador->indice, jogo->monstros[i].indice, jogador->direcaoMovimento) )
-                    {
-                        if( verificarColisao(obterHitboxDoJogador(jogador), obterHitboxPelaPosicao(jogo->monstros[i].posicao)) )
-                        {
-                            alterarPosicaoPelaDirecao(&jogador->posicao, JOGADOR_TAMANHO_PASSO, obterDirecaoOposta(jogador->direcaoMovimento));
-
-                            trocarEstadoDoJogador(jogador, ENTIDADE_MORRENDO);
-                        }
-                    }
-                }
-            }
-        }
-
-        // Atualiza o indice do jogador
-        jogador->indice = obterPosicaoBrutaDoJogador(obterHitboxDoJogador(jogador));
-    }
-
-    Monstro *monstro;
-    int j;
-
-    // Movimenta os monstros
-    for( i = 0; i < jogo->contadorDeMonstros; i++ )
-    {
-        if( jogo->monstros[i].estado != ENTIDADE_MORTA && jogo->monstros[i].estado != ENTIDADE_MORRENDO )
-        {
-            monstro = &jogo->monstros[i];
-            alterarPosicaoPelaDirecao(&(monstro->posicao), MONSTRO_TAMANHO_PASSO, monstro->direcaoMovimento);
-
-            for( j = 0; j < jogo->contadorDeParedes; j++ )
-            {
-                if( obterCondicaoDeDestinoPelaDirecao(monstro->indice, jogo->paredes[j].indice, monstro->direcaoMovimento) )
-                {
-                    if( verificarColisao(obterHitboxPelaPosicao(monstro->posicao), obterHitboxPelaPosicao(jogo->paredes[j].posicao)) )
-                    {
-                        alterarPosicaoPelaDirecao(&(monstro->posicao), MONSTRO_TAMANHO_PASSO, obterDirecaoOposta(monstro->direcaoMovimento));
-
-                        monstro->direcaoMovimento = obterDirecaoDiferenteAleatoria(monstro->direcaoMovimento);
-                    }
-                }
-            }
-
-            for( j = 0; j < jogo->contadorDeObstaculos; j++ )
-            {
-                if( jogo->obstaculos[j].estado == ENTIDADE_VISIVEL )
-                {
-                    if( obterCondicaoDeDestinoPelaDirecao(monstro->indice, jogo->obstaculos[j].indice, monstro->direcaoMovimento) )
-                    {
-                        if( verificarColisao(obterHitboxPelaPosicao(monstro->posicao), obterHitboxPelaPosicao(jogo->obstaculos[j].posicao)) )
-                        {
-                            alterarPosicaoPelaDirecao(&(monstro->posicao), MONSTRO_TAMANHO_PASSO, obterDirecaoOposta(monstro->direcaoMovimento));
-
-                            monstro->direcaoMovimento = obterDirecaoDiferenteAleatoria(monstro->direcaoMovimento);
-                        }
-                    }
-                }
-            }
-
-            // Verifica se colide com o jogador
-            if( verificarColisao(obterHitboxPelaPosicao(monstro->posicao), obterHitboxDoJogador(jogador)) && jogador->estado != ENTIDADE_MORTA )
-            {
-                alterarPosicaoPelaDirecao(&(monstro->posicao), MONSTRO_TAMANHO_PASSO, obterDirecaoOposta(monstro->direcaoMovimento));
-
-                // Mata o jogador
-                trocarEstadoDoJogador(jogador, ENTIDADE_MORRENDO);
-
-            }
-
-            trocarEstadoDoMonstro(monstro, obterEstadoPelaDirecao(monstro->direcaoMovimento));
-
-            // Atualiza o indice do jogador
-            monstro->indice = obterPosicaoBruta(monstro->posicao);
-        }
-    }
-
-    // Verifica as bombas
-    for( i = 0; i < jogo->contadorDeBombas; i++ )
-    {
-        if( jogo->bombas[i].estado == BOMBA_EXPLODINDO )
-        {
-            verificarImpactoDaBombaNoJogo(&jogo->bombas[i], jogo);
-        }
-    }
-}
-
-void processarTickFPSJogoPausado( Jogo *jogo )
-{
-    if( TeclasPressionadas[ALLEGRO_KEY_ESCAPE] )
-    {
-        limparConteudoDaJanela();
-        // Caso aperte novamente o ESC, sai da partida
-        aplicacao->modo = MODO_MENU;
-    }
-    else if( TeclasPressionadas[ALLEGRO_KEY_SPACE] )
-    {
-        // Caso apertar espaço, volta ao jogo
-        jogo->modo = JOGO_MODO_RODANDO;
-    }
-}
-
+/**
+ * Desenha todo o jogo
+ * 
+ * @param *Jogo jogo Referência do jogo
+ * 
+ */
 void desenharJogo( Jogo *jogo )
 {
+    al_clear_to_color(al_map_rgb(0, 0, 0));
+
     desenharFundo();
 
     int i, j;
@@ -798,6 +1001,11 @@ void desenharJogo( Jogo *jogo )
 
         }
 
+        if( i == jogo->saida.indice.i )
+        {
+            desenharSaida(&jogo->saida);
+        }
+
         if( i == jogo->jogador.indice.i )
         {
             desenharJogador(&jogo->jogador);
@@ -805,12 +1013,25 @@ void desenharJogo( Jogo *jogo )
 
     }
 
-    desenharSaida(&jogo->saida);
+    for( j = 0; j < jogo->contadorDeBombas; j++ )
+    {
+        if( jogo->bombas[j].estado != BOMBA_DESATIVADA )
+        {
+            desenharExplosoes(&jogo->bombas[j]);
+        }
+
+    }
+    
     desenharRodape(jogo);
 
     if( jogo->modo == JOGO_MODO_PAUSADO )
     {
         desenharOverlayDePausa();
+    }
+
+    if( jogo->modo == JOGO_MODO_GAMEOVER )
+    {
+        desenharOverlayDeGameOver(jogo);
     }
 
 }
@@ -846,7 +1067,7 @@ void desenharRodape( Jogo *jogo )
     al_draw_textf(aplicacao->recursos.fonteCantarellBold, al_map_rgb(229, 227, 185), 425, ALTURA_TELA - ALTURA_RODAPE + 1, ALLEGRO_ALIGN_CENTER, "%d%d:%d%d", 0, horas, minutosDigito1, minutosDigito2);
 
     // Desenha a pontuação
-    al_draw_textf(aplicacao->recursos.fonteCantarellBold, al_map_rgb(229, 227, 185), (790 - (jogo->jogador.pontuacao / 10) * 4), ALTURA_TELA - ALTURA_RODAPE + 1, 0, "%d", jogo->jogador.pontuacao);
+    al_draw_textf(aplicacao->recursos.fonteCantarellBold, al_map_rgb(229, 227, 185), 820, ALTURA_TELA - ALTURA_RODAPE + 1, ALLEGRO_ALIGN_RIGHT, "%d", jogo->jogador.pontuacao);
 }
 
 void desenharParede( Parede *parede )
@@ -858,11 +1079,10 @@ void desenharSaida( Saida *saida )
 {
     if( saida->estado == ENTIDADE_INVISIVEL )
     {
-        /*Obstaculo obstaculo;
+        Obstaculo obstaculo;
         obstaculo.posicao = saida->posicao;
         definirPadroesDoObstaculo(&obstaculo);
-        desenharObstaculo(&obstaculo);*/
-        al_draw_bitmap(aplicacao->recursos.jogoSaida, saida->posicao.x, saida->posicao.y, 0);
+        desenharObstaculo(&obstaculo);
     }
     else
     {
@@ -894,6 +1114,15 @@ void desenharMonstro( Monstro *monstro )
 void desenharBomba( Bomba *bomba )
 {
     atualizarSprite(&bomba->sprite);
+
+    if( bomba->estado != BOMBA_EXPLODINDO )
+    {
+        desenharSprite(&bomba->sprite, bomba->posicao);
+    }
+}
+
+void desenharExplosoes( Bomba *bomba )
+{
     atualizarSprite(&bomba->spriteRastro);
 
     if( bomba->estado == BOMBA_EXPLODINDO )
@@ -925,14 +1154,27 @@ void desenharBomba( Bomba *bomba )
             }
         }
     }
-    else
-    {
-        desenharSprite(&bomba->sprite, bomba->posicao);
-    }
 }
 
 void desenharOverlayDePausa( )
 {
     al_draw_filled_rectangle(0, 0, LARGURA_TELA, ALTURA_TELA, al_map_rgba(19, 20, 38, 200));
     al_draw_bitmap(aplicacao->recursos.jogoTelaPausa, 0, 0, 0);
+}
+
+void desenharOverlayDeGameOver( Jogo *jogo )
+{
+    if( jogo->jogador.vidas == 0 )
+    {
+        al_draw_filled_rectangle(0, 0, LARGURA_TELA, ALTURA_TELA, al_map_rgba(19, 0, 0, 200));
+        al_draw_bitmap(aplicacao->recursos.jogoTelaGameOver, 0, 0, 0);
+    }
+    else
+    {
+        al_draw_filled_rectangle(0, 0, LARGURA_TELA, ALTURA_TELA, al_map_rgba(0, 20, 0, 200));
+        al_draw_bitmap(aplicacao->recursos.jogoTelaVitoria, 0, 0, 0);
+    }
+
+    al_draw_textf(aplicacao->recursos.fonteCantarellBold, al_map_rgb(229, 227, 185), (LARGURA_TELA / 2), 260, ALLEGRO_ALIGN_CENTER, "%d", jogo->jogador.pontuacao);
+    al_draw_ustr(aplicacao->recursos.fonteCantarellBold, al_map_rgb(229, 227, 185), (LARGURA_TELA / 2), 400, ALLEGRO_ALIGN_CENTER, jogo->jogador.nome);
 }

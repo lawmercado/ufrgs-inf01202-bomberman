@@ -90,6 +90,7 @@ typedef struct Monstro {
 #define JOGADOR_TAMANHO_PASSO 3
 #define JOGADOR_NUMERO_VIDAS 3
 #define JOGADOR_BOMBAS_PERMITIDAS_PADRAO 1
+#define JOGADOR_NIVEL_MAXIMO 5
 
 typedef struct Jogador {
     int vidas;
@@ -103,6 +104,7 @@ typedef struct Jogador {
     Indice indiceInicial;
     Posicao posicao;
     Sprite sprite;
+    ALLEGRO_USTR *nome;
 } Jogador;
 
 /**
@@ -143,8 +145,8 @@ typedef struct Jogo {
     bool carregado;
     bool inicializado;
     int modo;
-    Jogador jogador;
     int tempo;
+    Jogador jogador;
     Saida saida;
     Bomba bombas[MAXIMO_BOMBAS_PERMITIDAS];
     int contadorDeBombas;
@@ -163,13 +165,15 @@ void carregarParedesPadroes();
 void popularJogoConformeLinha(Jogo *jogo, char linha[], int numeroLinha);
 void processarEventoDoJogo(Jogo *jogo, ALLEGRO_EVENT evento);
 void processarTickFPSJogoRodando(Jogo* jogo);
-void processarTickFPSJogoPausado(Jogo* jogo);
 void verificarImpactoDaBombaNoJogo(Bomba *bomba, Jogo *jogo);
+void processarTickFPSJogoPausado(Jogo* jogo);
+void processarTickFPSJogoGameOver(Jogo* jogo);
 
 void definirPadroesDoJogador(Jogador *jogador);
 void trocarEstadoDoJogador(Jogador *jogador, int estado);
 Hitbox obterHitboxDoJogador(Jogador *jogador);
 Sprite obterSpriteDoJogadorPeloEstado(Jogador *jogador);
+void salvarPontuacaoDoJogador(Jogador *jogador);
 
 void definirPadroesDasBombas(Jogo *jogo);
 void plantarBomba(Jogo *jogo);
@@ -203,4 +207,6 @@ void desenharRodape(Jogo *jogo);
 void desenharSaida(Saida *saida);
 void desenharMonstro(Monstro* monstro);
 void desenharBomba(Bomba* bomba);
+void desenharExplosoes(Bomba *bomba);
 void desenharOverlayDePausa();
+void desenharOverlayDeGameOver(Jogo *jogo);

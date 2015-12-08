@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:osb="http://www.openswatchbook.org/uri/2009/osb"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="850"
+   height="610"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.5 r10040"
+   sodipodi:docname="telaVitoria.svg"
+   inkscape:export-filename="/home/luisaugusto/Projetos/Bomberman/recursos/imagens/jogo/telaVitoria.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs4">
+    <linearGradient
+       id="linearGradient3862"
+       osb:paint="solid">
+      <stop
+         style="stop-color:#ce8100;stop-opacity:1;"
+         offset="0"
+         id="stop3864" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3856"
+       osb:paint="solid">
+      <stop
+         style="stop-color:#ff0000;stop-opacity:1;"
+         offset="0"
+         id="stop3858" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3846">
+      <stop
+         style="stop-color:#999999;stop-opacity:0.34306568;"
+         offset="0"
+         id="stop3848" />
+      <stop
+         style="stop-color:#999999;stop-opacity:0;"
+         offset="1"
+         id="stop3850" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3846"
+       id="linearGradient3927"
+       gradientUnits="userSpaceOnUse"
+       x1="-82.687431"
+       y1="270.41428"
+       x2="-84.41613"
+       y2="196.29048" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3846"
+       id="linearGradient3036"
+       gradientUnits="userSpaceOnUse"
+       x1="-82.687431"
+       y1="270.41428"
+       x2="-84.41613"
+       y2="196.29048" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.93055396"
+     inkscape:cx="409.15829"
+     inkscape:cy="325.85251"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1366"
+     inkscape:window-height="700"
+     inkscape:window-x="0"
+     inkscape:window-y="29"
+     inkscape:window-maximized="1"
+     showguides="true"
+     inkscape:guide-bbox="true">
+    <sodipodi:guide
+       orientation="0,1"
+       position="100.79681,223.50598"
+       id="guide3016" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="-133.66534,352.78885"
+       id="guide3030" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Camada 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-442.36218)">
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:200%;letter-spacing:0px;word-spacing:0px;fill:#e5e3b9;fill-opacity:1;stroke:none;font-family:Sans"
+       x="147.55266"
+       y="747.6792"
+       id="text3929-09"
+       sodipodi:linespacing="200%"
+       inkscape:export-filename="/home/luisaugusto/Projetos/Bomberman/res/fundoMenu.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         x="147.55266"
+         y="747.6792"
+         id="tspan3935-9"
+         style="font-weight:bold;text-align:start;line-height:200%;letter-spacing:-5.90150309000000028px;text-anchor:start;fill:#e5e3b9;fill-opacity:1;stroke:none;-inkscape-font-specification:Sans Bold;font-size:40px" /></text>
+    <text
+       xml:space="preserve"
+       style="font-size:80px;font-style:normal;font-weight:normal;line-height:200%;letter-spacing:-2px;word-spacing:0px;fill:#e5e3b9;fill-opacity:1;stroke:none;font-family:Sans"
+       x="427.15686"
+       y="629.40649"
+       id="text3929"
+       sodipodi:linespacing="200%"
+       inkscape:export-filename="/home/luisaugusto/Projetos/Bomberman/res/fundoMenu.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         x="426.15686"
+         y="629.40649"
+         id="tspan3935"
+         style="font-size:70px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:center;line-height:200%;letter-spacing:-2px;text-anchor:middle;fill:#e5e3b9;fill-opacity:1;stroke:none;font-family:Cantarell;-inkscape-font-specification:Cantarell Bold">VOCÊ VENCEU!</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:60px;font-style:normal;font-weight:normal;line-height:200%;letter-spacing:0px;word-spacing:0px;fill:#e5e3b9;fill-opacity:1;stroke:none;font-family:Sans"
+       x="424.68906"
+       y="699.5733"
+       id="text3929-3"
+       sodipodi:linespacing="200%"
+       inkscape:export-filename="/home/luisaugusto/Projetos/Bomberman/res/fundoMenu.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         x="423.68906"
+         y="699.5733"
+         style="font-size:40px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:center;line-height:200%;letter-spacing:-2px;text-anchor:middle;fill:#e5e3b9;fill-opacity:1;stroke:none;font-family:Cantarell;-inkscape-font-specification:Cantarell Bold"
+         id="tspan3067">Sua pontuação</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:60px;font-style:normal;font-weight:normal;line-height:200%;letter-spacing:0px;word-spacing:0px;fill:#e5e3b9;fill-opacity:1;stroke:none;font-family:Sans"
+       x="424.98999"
+       y="828.8562"
+       id="text3929-3-3"
+       sodipodi:linespacing="200%"
+       inkscape:export-filename="/home/luisaugusto/Projetos/Bomberman/res/fundoMenu.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         x="423.98999"
+         y="828.8562"
+         style="font-size:40px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:center;line-height:200%;letter-spacing:-2px;text-anchor:middle;fill:#e5e3b9;fill-opacity:1;stroke:none;font-family:Cantarell;-inkscape-font-specification:Cantarell Bold"
+         id="tspan3067-3">Informe seu nome</tspan></text>
+  </g>
+</svg>

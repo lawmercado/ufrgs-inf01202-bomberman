@@ -7,8 +7,9 @@
 typedef struct Menu {
     int opcaoIndicada;
     bool haOpcaoSelecionada;
+    Sprite sprite;
 } Menu;
 
-void definirPadroesDoMenu();
+void definirPadroesDoMenu(Menu *menu);
 void processarEventoDoMenu(Menu *menu, ALLEGRO_EVENT evento);
 void desenharMenu(Menu *menu);
